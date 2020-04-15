@@ -56,24 +56,24 @@ namespace PT_Console_App_ShipsAndBoatsGame
 
         public static string GetMenu()
         {
-            StringBuilder menuMain = new StringBuilder();
-            menuMain.AppendLine($"   Menu: ");
-            menuMain.AppendLine($"   ┌───────┬─────────────────┐");
-            menuMain.AppendLine($"   │ Space │ Play            │");
-            menuMain.AppendLine($"   │  I/i  │ Instructions    │");
-            menuMain.AppendLine($"   │  S/s  │ Statistics      │");
-            menuMain.AppendLine($"   │  Esc  │ Exit            │");
-            menuMain.AppendLine($"   └───────┴─────────────────┘");
+            StringBuilder menu = new StringBuilder();
+            menu.AppendLine($"   Menu: ");
+            menu.AppendLine($"   ┌───────┬─────────────────┐");
+            menu.AppendLine($"   │ Space │ Play            │");
+            menu.AppendLine($"   │  I/i  │ Instructions    │");
+            menu.AppendLine($"   │  S/s  │ Statistics      │");
+            menu.AppendLine($"   │  Esc  │ Exit            │");
+            menu.AppendLine($"   └───────┴─────────────────┘");
 
-            return menuMain.ToString().TrimEnd();
+            return menu.ToString().TrimEnd();
         }
 
         public static string GetInvalidMessage()
         {
-            StringBuilder mySB = new StringBuilder();
-            mySB.AppendLine($"Invalid!");
+            StringBuilder invalidMessage = new StringBuilder();
+            invalidMessage.AppendLine($"Invalid!");
 
-            return mySB.ToString().TrimEnd();
+            return invalidMessage.ToString().TrimEnd();
         }
     }
 }

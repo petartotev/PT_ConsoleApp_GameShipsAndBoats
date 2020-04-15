@@ -81,6 +81,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
         public bool CheckIfWinner()
         {
             int hitTargets = 0;
+
             for (int row = 0; row < 10; row++)
             {
                 for (int col = 0; col < 10; col++)

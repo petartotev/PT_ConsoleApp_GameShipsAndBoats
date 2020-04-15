@@ -7,7 +7,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
 {
     public class GameScenario
     {
-        private static void PlayGamePrintUI(Player player, int stage)
+        private static void PrintGameplayUI(Player player, int stage)
         {
             Console.Clear();
 
@@ -328,7 +328,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
             {      
                 while (true)
                 {
-                    PlayGamePrintUI(player, stage);
+                    PrintGameplayUI(player, stage);
 
                     int row = -1;
                     int col = -1;
@@ -406,7 +406,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
 
                 while (true)
                 {
-                    PlayGamePrintUI(player, stage);                                        
+                    PrintGameplayUI(player, stage);                                        
 
                     Random myRandom = new Random();
                     int rowRandom = myRandom.Next(0, 10);
@@ -442,18 +442,18 @@ namespace PT_Console_App_ShipsAndBoatsGame
                 stage++; // END OF STAGE
             }
 
-            PlayGamePrintUI(player, stage);
+            PrintGameplayUI(player, stage);
 
             if (player.CheckIfWinner())
             {                
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("\n   ~CONGRATULATIONS! YOU WON!~");
-            }
+            } // YOU WON
             else if (opponent.CheckIfWinner())
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("\n   ~CONDOLENCES... YOU LOST!~");
-            }
+            } // YOU LOST
 
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine($"\n   The game took {stage} stages.");

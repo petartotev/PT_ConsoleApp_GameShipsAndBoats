@@ -7,7 +7,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
     {
         static void Main(string[] args)
         {
-            GameConsole.SetMainProperties();
+            GameConsole.SetConsoleProperties();
 
             while (true)
             {

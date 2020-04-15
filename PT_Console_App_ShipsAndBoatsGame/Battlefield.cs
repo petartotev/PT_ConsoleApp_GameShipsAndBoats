@@ -7,17 +7,14 @@ namespace PT_Console_App_ShipsAndBoatsGame
     public class Battlefield
     {
         private const string slotOccuppied = ". ";
-        private const string slotNull = "  ";
-        private const string slotEmpty = "+ ";
+        private const string slotEmpty = "  ";
         private const string slotHidden = "/ ";
 
         private const string slotFull = "B ";
         private const string slotCarrier = "C ";
         private const string slotSubmarine = "S ";
         private const string slotTanker = "T ";
-
         
-
         private List<int[]> slotsFullCoordinates = new List<int[]>();
 
         private string[,] field = new string[10, 10];
@@ -688,52 +685,6 @@ namespace PT_Console_App_ShipsAndBoatsGame
             return mySB.ToString().TrimEnd();
         }
 
-        public string PrintCensured()
-        {
-            StringBuilder mySB = new StringBuilder();
-            mySB.AppendLine($"   ╔═══╦═════════════════════╗");
-            mySB.AppendLine($"   ║   ║ A B C D E F G H I J ║");
-            mySB.AppendLine($"   ╠═══╬═════════════════════╣");
-
-            for (int row = 0; row < this.field.GetLength(0); row++)
-            {
-                mySB.Append($"   ║ {row} ║ ");
-
-                for (int col = 0; col < this.field.GetLength(1); col++)
-                {
-                    mySB.Append(this.field[row, col]);
-                }
-                mySB.Append("║");
-                mySB.AppendLine();
-            }
-
-            mySB.AppendLine($"   ╚═══╩═════════════════════╝");
-            return mySB.ToString().TrimEnd();
-        }
-
-        public string PrintHidden()
-        {
-            StringBuilder mySB = new StringBuilder();
-            mySB.AppendLine($"   ╔═══╦═════════════════════╗");
-            mySB.AppendLine($"   ║   ║ A B C D E F G H I J ║");
-            mySB.AppendLine($"   ╠═══╬═════════════════════╣");
-
-            for (int row = 0; row < this.field.GetLength(0); row++)
-            {
-                mySB.Append($"   ║ {row} ║ ");
-
-                for (int col = 0; col < this.field.GetLength(1); col++)
-                {
-                    mySB.Append(slotEmpty);
-                }
-                mySB.Append("║");
-                mySB.AppendLine();
-            }
-
-            mySB.AppendLine($"   ╚═══╩═════════════════════╝");
-            return mySB.ToString().TrimEnd();
-        }
-
         public string PrintEmpty()
         {
             StringBuilder mySB = new StringBuilder();
@@ -747,7 +698,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
 
                 for (int col = 0; col < this.field.GetLength(1); col++)
                 {
-                    mySB.Append(slotNull);
+                    mySB.Append(slotEmpty);
                 }
                 mySB.Append("║");
                 mySB.AppendLine();
