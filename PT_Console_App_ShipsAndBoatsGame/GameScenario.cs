@@ -325,7 +325,58 @@ namespace PT_Console_App_ShipsAndBoatsGame
             Player opponent = new Player();
 
             while (true)
-            {      
+            {     
+                while (true)
+                {
+                    PrintGameplayUI(player, stage);                                        
+
+                    Random myRandom = new Random();
+
+                    int rowRandom;
+                    int colRandom;
+
+                    while (true)
+                    {
+                        rowRandom = myRandom.Next(0, 10);
+                        colRandom = myRandom.Next(0, 10);
+
+                        if (opponent.OpponentBattlefield.Field[rowRandom, colRandom] != "/ ")
+                        {
+                            continue;
+                        }                        
+                        else
+                        {
+                            break;
+                        }
+                    }
+
+                    string playerAttackedSlotResult = player.GetAttacked(rowRandom, colRandom);
+
+                    opponent.BotAttack(rowRandom, colRandom, playerAttackedSlotResult);
+
+                    Console.WriteLine($" Opponent" + opponent.GetAttackMessage(playerAttackedSlotResult));
+                    Thread.Sleep(2500);
+
+                    if (opponent.CheckIfWinner())
+                    {
+                        break;
+                    }
+
+                    if (playerAttackedSlotResult == "T " || playerAttackedSlotResult == "S " || playerAttackedSlotResult == "C " || playerAttackedSlotResult == "B " || playerAttackedSlotResult == "X ")
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                } // OPPONENT ATTACKS, PLAYER GETS ATTACKED
+
+                if (opponent.CheckIfWinner())
+                {
+                    break;
+                }
+
                 while (true)
                 {
                     PrintGameplayUI(player, stage);
@@ -400,41 +451,6 @@ namespace PT_Console_App_ShipsAndBoatsGame
                 } // PLAYER ATTACKS, OPPONENT GETS ATTACKED
 
                 if (player.CheckIfWinner())
-                {
-                    break;
-                }
-
-                while (true)
-                {
-                    PrintGameplayUI(player, stage);                                        
-
-                    Random myRandom = new Random();
-                    int rowRandom = myRandom.Next(0, 10);
-                    int colRandom = myRandom.Next(0, 10);
-
-                    string playerAttackedSlotResult = player.GetAttacked(rowRandom, colRandom);
-
-                    opponent.Attack(rowRandom, colRandom, playerAttackedSlotResult);
-
-                    Console.WriteLine($" Opponent" + opponent.GetAttackMessage(playerAttackedSlotResult));
-                    Thread.Sleep(2500);
-
-                    if (opponent.CheckIfWinner())
-                    {
-                        break;
-                    }
-
-                    if (playerAttackedSlotResult == "T " || playerAttackedSlotResult == "S " || playerAttackedSlotResult == "C " || playerAttackedSlotResult == "B " || playerAttackedSlotResult == "X ")
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        break;
-                    }
-                } // OPPONENT ATTACKS, PLAYER GETS ATTACKED
-
-                if (opponent.CheckIfWinner())
                 {
                     break;
                 }

@@ -24,6 +24,14 @@ namespace PT_Console_App_ShipsAndBoatsGame
             SetEmptyBattlefield();
         }
 
+        public string[,] Field
+        {
+            get
+            {
+                return this.field;
+            }
+        }
+
         private void AddSlotsFullToList()
         {
             for (int row = 0; row < 10; row++)

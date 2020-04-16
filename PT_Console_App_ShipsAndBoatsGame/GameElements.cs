@@ -71,7 +71,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
         public static string GetInvalidMessage()
         {
             StringBuilder invalidMessage = new StringBuilder();
-            invalidMessage.AppendLine($"Invalid!");
+            invalidMessage.AppendLine($" Invalid!");
 
             return invalidMessage.ToString().TrimEnd();
         }
