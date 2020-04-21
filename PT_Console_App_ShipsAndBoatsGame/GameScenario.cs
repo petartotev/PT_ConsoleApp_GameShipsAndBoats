@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Text;
 using System.Threading;
 
@@ -291,25 +292,9 @@ namespace PT_Console_App_ShipsAndBoatsGame
             Console.WriteLine(GameElements.GetLineSolid());
 
             Thread.Sleep(1000);
-            Console.WriteLine($"   Statistics:");
+            Console.WriteLine(GameElements.GetStatistics());
 
-            Thread.Sleep(1000);
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"\n   Games you won:");
-
-            Thread.Sleep(1000);
-            Console.WriteLine($"\n   {0}");
-
-            Thread.Sleep(1000);
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"\n   Games you lost:");
-
-            Thread.Sleep(1000);
-            Console.WriteLine($"\n   {0}");
-
-            Console.ForegroundColor = ConsoleColor.Cyan;
-
-            Thread.Sleep(5000);
+            Thread.Sleep(3000);
 
             Console.WriteLine("\n   Press any key to continue...");
             Console.ReadKey();
@@ -460,10 +445,13 @@ namespace PT_Console_App_ShipsAndBoatsGame
 
             PrintGameplayUI(player, stage);
 
+            int didYouWin = 0;
+
             if (player.CheckIfWinner())
             {                
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("\n   ~CONGRATULATIONS! YOU WON!~");
+                didYouWin = 1;
             } // YOU WON
             else if (opponent.CheckIfWinner())
             {
@@ -476,6 +464,39 @@ namespace PT_Console_App_ShipsAndBoatsGame
             
             Thread.Sleep(5000);
             Console.Clear();
+
+            WriteStatistics(didYouWin);
+        }
+
+        public static void WriteStatistics(int didYouWin)
+        {
+            var connection = new SqlConnection("Server=PT\\SQLEXPRESS;Database=ShipsAndBoatsGame;Integrated Security=True;");
+
+            connection.Open();
+
+            using (connection)
+            {
+                var commandGetWon = new SqlCommand("SELECT [Won] FROM Statisticsss", connection);
+                var resultWon = commandGetWon.ExecuteScalar();
+
+                var commandGetLost = new SqlCommand("SELECT [Lost] FROM Statisticsss", connection);
+                var resultLost = commandGetLost.ExecuteScalar();
+
+                if (didYouWin == 1)
+                {
+                    int resultWonUpdated = (int)resultWon + 1;
+
+                    var commandUpdateWon = new SqlCommand($"UPDATE Statisticsss SET Won = {resultWonUpdated}, Lost = {(int)resultLost} WHERE Id=1", connection);
+                    commandUpdateWon.ExecuteScalar();
+                }
+                else
+                {
+                    int resultLostUpdated = (int)resultLost + 1;
+
+                    var commandUpdateLost = new SqlCommand($"UPDATE Statisticsss SET Won = {(int)resultWon}, Lost = {resultLostUpdated} WHERE Id=1", connection);
+                    commandUpdateLost.ExecuteScalar();
+                }
+            }
         }
     }
 }

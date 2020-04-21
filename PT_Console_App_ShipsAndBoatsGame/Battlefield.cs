@@ -460,7 +460,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
 
             AddSlotsFullToList();
 
-            // 3 x SHIP
+            // 3 x CARRIER
             for (int j = 1; j <= 3; j++)
             {
                 while (true)
@@ -522,6 +522,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
 
                         break;
                     }
+                    
                     else if (horizontalOrVertical == 0 && (colR == 1 || colR == 2 || colR == 3 || colR == 4 || colR == 5 || colR == 6 || colR == 7) && (rowR != 0) && (rowR != 9) &&
                         (this.field[rowR - 1, colR - 1] != slotFull && this.field[rowR - 1, colR] != slotFull && this.field[rowR - 1, colR + 1] != slotFull && this.field[rowR - 1, colR + 2] != slotFull) &&
                         (this.field[rowR, colR - 1] != slotFull && this.field[rowR, colR] != slotFull && this.field[rowR, colR + 1] != slotFull && this.field[rowR, colR + 2] != slotFull) &&
@@ -548,11 +549,12 @@ namespace PT_Console_App_ShipsAndBoatsGame
 
                         break;
                     }
+                    
                     else if (horizontalOrVertical == 1 && (rowR == 1 || rowR == 2 || rowR == 3 || rowR == 4 || rowR == 5 || rowR == 6 || rowR == 7) && (colR != 0) && (colR != 9) &&
-                        (this.field[rowR - 1, colR - 1] != slotFull && this.field[rowR - 1, colR] != slotFull && this.field[rowR -1, colR + 1] != slotFull) &&
+                        (this.field[rowR - 1, colR - 1] != slotFull && this.field[rowR - 1, colR] != slotFull && this.field[rowR - 1, colR + 1] != slotFull) &&
                         (this.field[rowR, colR - 1] != slotFull && this.field[rowR, colR] != slotFull && this.field[rowR, colR + 1] != slotFull) &&
                         (this.field[rowR + 1, colR - 1] != slotFull && this.field[rowR + 1, colR] != slotFull && this.field[rowR + 1, colR + 1] != slotFull) &&
-                        (this.field[rowR + 2, colR - 1] != slotFull && this.field[rowR + 2, colR] != slotFull && this.field[rowR + 2, colR] != slotFull))
+                        (this.field[rowR + 2, colR - 1] != slotFull && this.field[rowR + 2, colR] != slotFull && this.field[rowR + 2, colR + 1] != slotFull))
                     {
                         this.field[rowR, colR] = this.field[rowR + 1, colR] = slotFull;
 

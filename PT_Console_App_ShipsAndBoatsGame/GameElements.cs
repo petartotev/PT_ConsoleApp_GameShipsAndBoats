@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Text;
 using System.Threading;
 
@@ -66,6 +67,44 @@ namespace PT_Console_App_ShipsAndBoatsGame
             menu.AppendLine($"   └───────┴─────────────────┘");
 
             return menu.ToString().TrimEnd();
+        }
+
+        public static string GetStatistics()
+        {
+            int gamesWon = 0;
+            int gamesLost = 0;
+
+            var connection = new SqlConnection("Server=PT\\SQLEXPRESS;Database=ShipsAndBoatsGame;Integrated Security=True;");
+
+            connection.Open();
+
+            using (connection)
+            {
+                var commandGetWonResult = new SqlCommand("SELECT Won FROM Statisticsss WHERE ID=1", connection);
+
+                var resultWon = commandGetWonResult.ExecuteScalar();
+
+                gamesWon = (int)resultWon;
+
+                var commandGetLostResult = new SqlCommand("SELECT Lost FROM Statisticsss WHERE ID=1", connection);
+
+                var resultLost = commandGetLostResult.ExecuteScalar();
+
+                gamesLost = (int)resultLost;
+
+            }
+
+            StringBuilder statistics = new StringBuilder();
+            statistics.AppendLine($"   Statistics: ");
+            statistics.AppendLine($"   ┌────────────┬────────────┐");
+            statistics.AppendLine($"   │            │            │");
+            statistics.AppendLine($"   │    YOU     │     PC     │");
+            statistics.AppendLine($"   │                         │");
+            statistics.AppendLine($"   │    {gamesWon:D4}    :    {gamesLost:D4}    │");
+            statistics.AppendLine($"   │                         │");
+            statistics.AppendLine($"   └────────────┴────────────┘");
+
+            return statistics.ToString().TrimEnd();
         }
 
         public static string GetInvalidMessage()
