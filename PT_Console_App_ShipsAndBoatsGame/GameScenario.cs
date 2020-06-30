@@ -113,7 +113,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
             Console.WriteLine("  0 or 1 of its modules lay on");
             Thread.Sleep(750);
             Console.WriteLine("  the sides/edges of the field.");
-            Thread.Sleep(4500);
+            Thread.Sleep(5000);
 
 
             Console.Clear();
@@ -171,11 +171,14 @@ namespace PT_Console_App_ShipsAndBoatsGame
 
             Thread.Sleep(1000);
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"\n   NOT CORRECT!!!\n");
+            Console.WriteLine($"\n   NOT CORRECT!!!");
 
             Console.ForegroundColor = ConsoleColor.Cyan;
 
-            Thread.Sleep(6000);
+            Thread.Sleep(5000);
+
+            Console.WriteLine(GameElements.GetPressKeyMessage());
+            Console.ReadKey();
 
 
             Console.Clear();
@@ -199,7 +202,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
             Console.WriteLine("\n  In other words, 2 vessels ");
             Thread.Sleep(750);
             Console.WriteLine("  cannot \"touch\".");
-            Thread.Sleep(4500);
+            Thread.Sleep(5000);
 
 
             Console.Clear();
@@ -277,8 +280,9 @@ namespace PT_Console_App_ShipsAndBoatsGame
 
             Thread.Sleep(5000);
 
-            Console.WriteLine("\n   Press any key to continue...");
+            Console.WriteLine(GameElements.GetPressKeyMessage());
             Console.ReadKey();
+
 
             Console.Clear();
         }
@@ -296,7 +300,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
 
             Thread.Sleep(3000);
 
-            Console.WriteLine("\n   Press any key to continue...");
+            Console.WriteLine(GameElements.GetPressKeyMessage());
             Console.ReadKey();
 
             Console.Clear();

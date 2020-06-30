@@ -114,5 +114,13 @@ namespace PT_Console_App_ShipsAndBoatsGame
 
             return invalidMessage.ToString().TrimEnd();
         }
+
+        public static string GetPressKeyMessage()
+        {
+            StringBuilder invalidMessage = new StringBuilder();
+            invalidMessage.AppendLine($"\n   Press any key to continue...");
+
+            return invalidMessage.ToString().TrimEnd();
+        }
     }
 }
