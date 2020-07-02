@@ -7,8 +7,8 @@ namespace PT_Console_App_ShipsAndBoatsGame
     public class Player : IPlayer
     {
         private Battlefield playerBattlefield;
-
         private Battlefield opponentBattlefield;
+
         public Player()
         {
             this.playerBattlefield = new Battlefield();
@@ -33,6 +33,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
             }
         }
 
+
         public void BotAttack(int row, int col, string result)
         {
             if ((row < 0) || (row > 9) || (col < 0) || (col > 9))
@@ -44,6 +45,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
                 throw new ArgumentNullException($"The coordinates of the battlefield are out of range!");
             }
 
+            //CORNERS
             if (result == "B " && (row == 0) && (col == 0))
             {
                 this.opponentBattlefield.SetSlot(row, col + 1, ". ");
@@ -69,6 +71,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
                 this.opponentBattlefield.SetSlot(row, col - 1, ". ");
             } // BOAT ON LOWER-RIGHT-CORNER  
 
+            //MIDDLE
             else if (result == "B " && (row >= 1) && (row <= 8) && (col >= 1) && (col <= 8))
             {
                 this.opponentBattlefield.SetSlot(row - 1, col - 1, ". ");
@@ -80,7 +83,6 @@ namespace PT_Console_App_ShipsAndBoatsGame
                 this.opponentBattlefield.SetSlot(row + 1, col, ". ");
                 this.opponentBattlefield.SetSlot(row + 1, col + 1, ". ");
             } // BOAT IN THE MIDDLE
-
             else if ((result == "T " || result == "S " || result == "C " || result == "X ") && (row >= 1) && (row <= 8) && (col >= 1) && (col <= 8))
             {
                 this.opponentBattlefield.SetSlot(row - 1, col - 1, ". ");
@@ -89,6 +91,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
                 this.opponentBattlefield.SetSlot(row + 1, col + 1, ". ");
             } // VESSEL IN THE MIDDLE
 
+            //UPPER EDGE
             else if ((result == "T ") && (row == 0) && (col >= 1) && (col <= 8))
             {
                 this.opponentBattlefield.SetSlot(row, col - 1, ". ");
@@ -145,6 +148,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
                 this.opponentBattlefield.SetSlot(row + 1, col + 1, ". ");
             } // X ON UPPER EDGE
 
+            //LOWER EDGE
             else if ((result == "T ") && (row == 9) && (col >= 1) && (col <= 8))
             {
                 this.opponentBattlefield.SetSlot(row, col - 1, ". ");
@@ -201,6 +205,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
                 this.opponentBattlefield.SetSlot(row - 1, col + 1, ". ");
             } // X ON LOWER EDGE
 
+            //LEFT EDGE
             else if ((result == "T ") && (col == 0) && (row >= 1) && (row <= 8))
             {
                 this.opponentBattlefield.SetSlot(row - 1, col, ". ");
@@ -257,6 +262,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
                 this.opponentBattlefield.SetSlot(row + 1, col + 1, ". ");
             } // X ON LEFT EDGE
 
+            //RIGHT EDGE
             else if ((result == "T ") && (col == 9) && (row >= 1) && (row <= 8))
             {
                 this.opponentBattlefield.SetSlot(row - 1, col, ". ");

@@ -27,12 +27,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
 
             Console.WriteLine($"\n Stage {stage}");
         }
-
-        //public static void PlayGameTurn(Player player, Player opponent, int row, int col)
-        //{
-
-        //}
-
+                
         public static void PlayIntro()
         {
             Thread.Sleep(1000);
@@ -364,7 +359,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
                 if (opponent.CheckIfWinner())
                 {
                     break;
-                }
+                } //GAME ENDS - YOU WIN
 
                 while (true)
                 {

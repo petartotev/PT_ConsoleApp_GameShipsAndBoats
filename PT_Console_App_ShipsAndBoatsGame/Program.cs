@@ -4,7 +4,7 @@ using System.Text;
 
 namespace PT_Console_App_ShipsAndBoatsGame
 {
-    class Program
+    public class Program
     {
         static void Main(string[] args)
         {            
