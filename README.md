@@ -10,10 +10,15 @@ The things we needed to enjoy it - 2 pens, 2 sheets of paper and our backs again
 **Rules:**
 
 The game is played by 2 people - YOU and the PC (Opponent).
+
 Both of the sides have a battlefield which is a square matrix (10 x 10).
+
 Both of you have a fleet that consists of 1 Tanker (TTTT), 2 Submarines (SSS), 3 Carriers (CC) and 4 Boats (B).
+
 The Game Engine randomly generates the 10 vessels described above onto YOUr's and also onto PC's battlefield.
+
 The Engine places the 10 vessels of yours and the 10 that belong to the Opponent based on the following rules:
+
 - A Boat (B) could be placed anywhere on the Battlefield - in the corners, on the edges and in the middle of the matrix.
 - A Carrier (CC), a Submarine (SSS) or a Tanker (TTTT) could either be placed in the middle of the Battlefield or they could only touch 1 edge of the matrix with only 1 of their segments.
 - 2 vessels could not touch - either by their sides or diagonally.
