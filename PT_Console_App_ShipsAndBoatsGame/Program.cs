@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Data.SqlClient;
-using System.Text;
 
 namespace PT_Console_App_ShipsAndBoatsGame
 {
@@ -31,6 +29,5 @@ namespace PT_Console_App_ShipsAndBoatsGame
                 }
             }
         }
-
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 
 namespace PT_Console_App_ShipsAndBoatsGame
@@ -12,7 +11,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
         public Player()
         {
             this.playerBattlefield = new Battlefield();
-            playerBattlefield.SetRandomBattlefield();
+            this.playerBattlefield.SetNewRandomBattlefield();
 
             this.opponentBattlefield = new Battlefield();
         }
@@ -34,314 +33,61 @@ namespace PT_Console_App_ShipsAndBoatsGame
         }
 
 
-        public void BotAttack(int row, int col, string result)
+        public void BotAttack(int row, int col, string vessel)
         {
-            if ((row < 0) || (row > 9) || (col < 0) || (col > 9))
+            if (!Battlefield.CheckIfSlotIsInsideOfMatrix(row, col))
             {
                 throw new ArgumentOutOfRangeException($"The coordinates of the battlefield are out of range!");
             }
-            else if (result == null)
+            else if (vessel == null)
             {
                 throw new ArgumentNullException($"The coordinates of the battlefield are out of range!");
             }
 
-            //CORNERS
-            if (result == "B " && (row == 0) && (col == 0))
+            if (vessel == BattlefieldElements.slotBoat)
             {
-                this.opponentBattlefield.SetSlot(row, col + 1, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col + 1, ". ");
-            } // BOAT ON UPPER-LEFT-CORNER
-            else if (result == "B " && (row == 0) && (col == 9))
+                this.opponentBattlefield.SetBotOpponentSlotsAllAroundToDot(row, col);
+            } // BOAT
+            else if (BattlefieldElements.slotsVessels.Contains(vessel))
             {
-                this.opponentBattlefield.SetSlot(row, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col, ". ");
-            } // BOAT ON UPPER-RIGHT CORNER
-            else if (result == "B " && (row == 9) && (col == 0))
-            {
-                this.opponentBattlefield.SetSlot(row - 1, col, ". ");
-                this.opponentBattlefield.SetSlot(row - 1, col + 1, ". ");
-                this.opponentBattlefield.SetSlot(row, col + 1, ". ");
-            } // BOAT ON LOWER-LEFT-CORNER
-            else if (result == "B " && (row == 9) && (col == 9))
-            {
-                this.opponentBattlefield.SetSlot(row - 1, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row - 1, col, ". ");
-                this.opponentBattlefield.SetSlot(row, col - 1, ". ");
-            } // BOAT ON LOWER-RIGHT-CORNER  
+                if (Battlefield.CheckIfSlotIsInTheMiddle(row, col))
+                {
+                    this.opponentBattlefield.SetBotOpponentSlotsDiagonalToDot(row, col);
 
-            //MIDDLE
-            else if (result == "B " && (row >= 1) && (row <= 8) && (col >= 1) && (col <= 8))
-            {
-                this.opponentBattlefield.SetSlot(row - 1, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row - 1, col, ". ");
-                this.opponentBattlefield.SetSlot(row - 1, col + 1, ". ");
-                this.opponentBattlefield.SetSlot(row, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row, col + 1, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col + 1, ". ");
-            } // BOAT IN THE MIDDLE
-            else if ((result == "T " || result == "S " || result == "C " || result == "X ") && (row >= 1) && (row <= 8) && (col >= 1) && (col <= 8))
-            {
-                this.opponentBattlefield.SetSlot(row - 1, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row - 1, col + 1, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col + 1, ". ");
-            } // VESSEL IN THE MIDDLE
+                    if (vessel == BattlefieldElements.slotCarrier)
+                    {
+                        this.opponentBattlefield.SetBotOpponentSlotsIfAnotherCarrierAround(row, col);
+                    }
+                } // OTHER VESSEL IN THE MIDDLE
+                else if (Battlefield.CheckIfSlotIsOnEdge(row, col))
+                {
+                    this.opponentBattlefield.SetBotOpponentSlotsVesselOnEdgeToDot(row, col, vessel);
+                } // OTHER VESSEL ON EDGE
+            } // OTHER VESSEL
 
-            //UPPER EDGE
-            else if ((result == "T ") && (row == 0) && (col >= 1) && (col <= 8))
-            {
-                this.opponentBattlefield.SetSlot(row, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row, col + 1, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col + 1, ". ");
-                this.opponentBattlefield.SetSlot(row + 2, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row + 2, col + 1, ". ");
-                this.opponentBattlefield.SetSlot(row + 3, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row + 3, col + 1, ". ");
-                this.opponentBattlefield.SetSlot(row + 4, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row + 4, col + 1, ". ");
-                this.opponentBattlefield.SetSlot(row + 4, col, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col, "T ");
-                this.opponentBattlefield.SetSlot(row + 2, col, "T ");
-                this.opponentBattlefield.SetSlot(row + 3, col, "T ");
-            } // TANKER ON UPPER EDGE
-            else if ((result == "S ") && (row == 0) && (col >= 1) && (col <= 8))
-            {
-                this.opponentBattlefield.SetSlot(row, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row, col + 1, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col + 1, ". ");
-                this.opponentBattlefield.SetSlot(row + 2, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row + 2, col + 1, ". ");
-                this.opponentBattlefield.SetSlot(row + 3, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row + 3, col + 1, ". ");
-                this.opponentBattlefield.SetSlot(row + 3, col, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col, "S ");
-                this.opponentBattlefield.SetSlot(row + 2, col, "S ");
-            } // SUBMARINE ON UPPER EDGE
-            else if ((result == "C ") && (row == 0) && (col >= 1) && (col <= 8))
-            {
-                this.opponentBattlefield.SetSlot(row, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row, col + 1, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col + 1, ". ");
-                this.opponentBattlefield.SetSlot(row + 2, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row + 2, col + 1, ". ");
-                this.opponentBattlefield.SetSlot(row + 2, col, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col, "C ");
-            } // CARRIER ON UPPER EDGE
-            else if ((result == "B ") && (row == 0) && (col >= 1) && (col <= 8))
-            {
-                this.opponentBattlefield.SetSlot(row, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row, col + 1, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col + 1, ". ");
-            } // BOAT ON UPPER EDGE
-            else if ((result == "X ") && (row == 0) && (col >= 1) && (col <= 8))
-            {
-                this.opponentBattlefield.SetSlot(row + 1, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col + 1, ". ");
-            } // X ON UPPER EDGE
-
-            //LOWER EDGE
-            else if ((result == "T ") && (row == 9) && (col >= 1) && (col <= 8))
-            {
-                this.opponentBattlefield.SetSlot(row, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row, col + 1, ". ");
-                this.opponentBattlefield.SetSlot(row - 1, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row - 1, col + 1, ". ");
-                this.opponentBattlefield.SetSlot(row - 2, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row - 2, col + 1, ". ");
-                this.opponentBattlefield.SetSlot(row - 3, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row - 3, col + 1, ". ");
-                this.opponentBattlefield.SetSlot(row - 4, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row - 4, col + 1, ". ");
-                this.opponentBattlefield.SetSlot(row - 4, col, ". ");
-                this.opponentBattlefield.SetSlot(row - 1, col, "T ");
-                this.opponentBattlefield.SetSlot(row - 2, col, "T ");
-                this.opponentBattlefield.SetSlot(row - 3, col, "T ");
-            } // TANKER ON LOWER EDGE
-            else if ((result == "S ") && (row == 9) && (col >= 1) && (col <= 8))
-            {
-                this.opponentBattlefield.SetSlot(row, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row, col + 1, ". ");
-                this.opponentBattlefield.SetSlot(row - 1, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row - 1, col + 1, ". ");
-                this.opponentBattlefield.SetSlot(row - 2, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row - 2, col + 1, ". ");
-                this.opponentBattlefield.SetSlot(row - 3, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row - 3, col + 1, ". ");
-                this.opponentBattlefield.SetSlot(row - 3, col, ". ");
-                this.opponentBattlefield.SetSlot(row - 1, col, "S ");
-                this.opponentBattlefield.SetSlot(row - 2, col, "S ");
-            } // SUBMARINE ON LOWER EDGE
-            else if ((result == "C ") && (row == 9) && (col >= 1) && (col <= 8))
-            {
-                this.opponentBattlefield.SetSlot(row, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row, col + 1, ". ");
-                this.opponentBattlefield.SetSlot(row - 1, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row - 1, col + 1, ". ");
-                this.opponentBattlefield.SetSlot(row - 2, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row - 2, col + 1, ". ");
-                this.opponentBattlefield.SetSlot(row - 2, col, ". ");
-                this.opponentBattlefield.SetSlot(row - 1, col, "C ");
-            } // CARRIER ON LOWER EDGE
-            else if ((result == "B ") && (row == 9) && (col >= 1) && (col <= 8))
-            {
-                this.opponentBattlefield.SetSlot(row - 1, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row - 1, col, ". ");
-                this.opponentBattlefield.SetSlot(row - 1, col + 1, ". ");
-                this.opponentBattlefield.SetSlot(row, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row, col + 1, ". ");
-            } // BOAT ON LOWER EDGE
-            else if ((result == "X ") && (row == 9) && (col >= 1) && (col <= 8))
-            {
-                this.opponentBattlefield.SetSlot(row - 1, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row - 1, col + 1, ". ");
-            } // X ON LOWER EDGE
-
-            //LEFT EDGE
-            else if ((result == "T ") && (col == 0) && (row >= 1) && (row <= 8))
-            {
-                this.opponentBattlefield.SetSlot(row - 1, col, ". ");
-                this.opponentBattlefield.SetSlot(row - 1, col + 1, ". ");
-                this.opponentBattlefield.SetSlot(row - 1, col + 2, ". ");
-                this.opponentBattlefield.SetSlot(row - 1, col + 3, ". ");
-                this.opponentBattlefield.SetSlot(row - 1, col + 4, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col + 1, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col + 2, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col + 3, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col + 4, ". ");
-                this.opponentBattlefield.SetSlot(row, col + 4, ". ");
-                this.opponentBattlefield.SetSlot(row, col + 1, "T ");
-                this.opponentBattlefield.SetSlot(row, col + 2, "T ");
-                this.opponentBattlefield.SetSlot(row, col + 3, "T ");
-            } // TANKER ON LEFT EDGE
-            else if ((result == "S ") && (col == 0) && (row >= 1) && (row <= 8))
-            {
-                this.opponentBattlefield.SetSlot(row - 1, col, ". ");
-                this.opponentBattlefield.SetSlot(row - 1, col + 1, ". ");
-                this.opponentBattlefield.SetSlot(row - 1, col + 2, ". ");
-                this.opponentBattlefield.SetSlot(row - 1, col + 3, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col + 1, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col + 2, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col + 3, ". ");
-                this.opponentBattlefield.SetSlot(row, col + 3, ". ");
-                this.opponentBattlefield.SetSlot(row, col + 1, "S ");
-                this.opponentBattlefield.SetSlot(row, col + 2, "S ");
-            } // SUBMARINE ON LEFT EDGE
-            else if ((result == "C ") && (col == 0) && (row >= 1) && (row <= 8))
-            {
-                this.opponentBattlefield.SetSlot(row - 1, col, ". ");
-                this.opponentBattlefield.SetSlot(row - 1, col + 1, ". ");
-                this.opponentBattlefield.SetSlot(row - 1, col + 2, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col + 1, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col + 2, ". ");
-                this.opponentBattlefield.SetSlot(row, col + 2, ". ");
-                this.opponentBattlefield.SetSlot(row, col + 1, "C ");
-            } // CARRIER ON LEFT EDGE
-            else if ((result == "B ") && (col == 0) && (row >= 1) && (row <= 8))
-            {
-                this.opponentBattlefield.SetSlot(row - 1, col, ". ");
-                this.opponentBattlefield.SetSlot(row - 1, col + 1, ". ");
-                this.opponentBattlefield.SetSlot(row, col + 1, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col + 1, ". ");
-            } // BOAT ON LEFT EDGE
-            else if ((result == "X ") && (col == 0) && (row >= 1) && (row <= 8))
-            {
-                this.opponentBattlefield.SetSlot(row - 1, col + 1, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col + 1, ". ");
-            } // X ON LEFT EDGE
-
-            //RIGHT EDGE
-            else if ((result == "T ") && (col == 9) && (row >= 1) && (row <= 8))
-            {
-                this.opponentBattlefield.SetSlot(row - 1, col, ". ");
-                this.opponentBattlefield.SetSlot(row - 1, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row - 1, col - 2, ". ");
-                this.opponentBattlefield.SetSlot(row - 1, col - 3, ". ");
-                this.opponentBattlefield.SetSlot(row - 1, col - 4, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col - 2, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col - 3, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col - 4, ". ");
-                this.opponentBattlefield.SetSlot(row, col - 4, ". ");
-                this.opponentBattlefield.SetSlot(row, col - 1, "T ");
-                this.opponentBattlefield.SetSlot(row, col - 2, "T ");
-                this.opponentBattlefield.SetSlot(row, col - 3, "T ");
-            } // TANKER ON RIGHT EDGE
-            else if ((result == "S ") && (col == 9) && (row >= 1) && (row <= 8))
-            {
-                this.opponentBattlefield.SetSlot(row - 1, col, ". ");
-                this.opponentBattlefield.SetSlot(row - 1, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row - 1, col - 2, ". ");
-                this.opponentBattlefield.SetSlot(row - 1, col - 3, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col - 2, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col - 3, ". ");
-                this.opponentBattlefield.SetSlot(row, col - 3, ". ");
-                this.opponentBattlefield.SetSlot(row, col - 1, "S ");
-                this.opponentBattlefield.SetSlot(row, col - 2, "S ");
-            } // SUBMARINE ON RIGHT EDGE
-            else if ((result == "C ") && (col == 9) && (row >= 1) && (row <= 8))
-            {
-                this.opponentBattlefield.SetSlot(row - 1, col, ". ");
-                this.opponentBattlefield.SetSlot(row - 1, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row - 1, col - 2, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col - 2, ". ");
-                this.opponentBattlefield.SetSlot(row, col - 2, ". ");
-                this.opponentBattlefield.SetSlot(row, col - 1, "C ");
-            } // CARRIER ON RIGHT EDGE
-            else if ((result == "B ") && (col == 9) && (row >= 1) && (row <= 8))
-            {
-                this.opponentBattlefield.SetSlot(row - 1, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row - 1, col, ". ");
-                this.opponentBattlefield.SetSlot(row, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col, ". ");
-            } // BOAT ON RIGHT EDGE
-            else if ((result == "X ") && (col == 9) && (row >= 1) && (row <= 8))
-            {
-                this.opponentBattlefield.SetSlot(row - 1, col - 1, ". ");
-                this.opponentBattlefield.SetSlot(row + 1, col - 1, ". ");
-            } // X ON RIGHT EDGE
-
-            this.opponentBattlefield.SetSlot(row, col, result);
+            this.opponentBattlefield.SetSlot(row, col, vessel);
         }
 
-        public void Attack(int row, int col, string result)
+        public void Attack(int row, int col, string vessel)
         {
-            this.opponentBattlefield.SetSlot(row, col, result);
+            this.opponentBattlefield.SetSlot(row, col, vessel);
         }
 
-        public string GetAttackMessage(string result)
+        public string GetAttackMessage(string vessel)
         {
             StringBuilder attackMessage = new StringBuilder();
-            switch (result)
+            switch (vessel)
             {
-                case "T ":
+                case BattlefieldElements.slotTanker:
                     attackMessage.AppendLine($" hit a Tanker (TTTT)!");
                     break;
-                case "S ":
+                case BattlefieldElements.slotSubmarine:
                     attackMessage.AppendLine($" hit a Submarine (SSS)!");
                     break;
-                case "C ":
+                case BattlefieldElements.slotCarrier:
                     attackMessage.AppendLine($" hit a Carrier (CC)!");
                     break;
-                case "B ":
+                case BattlefieldElements.slotBoat:
                     attackMessage.AppendLine($" hit a Boat (B)!");
                     break;
                 default:
@@ -353,17 +99,17 @@ namespace PT_Console_App_ShipsAndBoatsGame
 
         public string GetAttacked(int row, int col)
         {
-            string slot = playerBattlefield.GetSlot(row, col);
+            string slotResult = playerBattlefield.GetSlot(row, col);
 
-            if (slot == "B " || slot == "C " || slot == "S " || slot == "T " || slot == "X ")
+            if (BattlefieldElements.slotsVessels.Contains(slotResult))
             {
-                playerBattlefield.SetSlot(row, col, "X ");
-                return slot;
+                playerBattlefield.SetSlot(row, col, BattlefieldElements.slotHit);
+                return slotResult;
             }
             else
             {
-                playerBattlefield.SetSlot(row, col, "+ ");
-                return "- ";
+                playerBattlefield.SetSlot(row, col, BattlefieldElements.slotOpponentPlus);
+                return BattlefieldElements.slotOpponentMinus;
             }
         }
 
@@ -371,15 +117,12 @@ namespace PT_Console_App_ShipsAndBoatsGame
         {
             int hitTargets = 0;
 
+            // TOTAL VESSELS = 10
             for (int row = 0; row < 10; row++)
             {
                 for (int col = 0; col < 10; col++)
                 {
-                    if (this.opponentBattlefield.GetSlot(row, col) == "B " ||
-                        this.opponentBattlefield.GetSlot(row, col) == "C " ||
-                        this.opponentBattlefield.GetSlot(row, col) == "S " ||
-                        this.opponentBattlefield.GetSlot(row, col) == "T " ||
-                        this.opponentBattlefield.GetSlot(row, col) == "X ")
+                    if (BattlefieldElements.slotsVessels.Contains(this.opponentBattlefield.GetSlot(row, col)))
                     {
                         hitTargets++;
                     }
@@ -390,10 +133,48 @@ namespace PT_Console_App_ShipsAndBoatsGame
             {
                 return true;
             }
-            else
+            return false;
+        }
+
+        public void MarkDownThatYourWholeShipOnEdgeIsDestroyed(int row, int col, string vessel)
+        {
+            int lengthVessel = BattlefieldElements.GetVesselLength(vessel);
+
+            if (BattlefieldElements.slotsVessels.Contains(vessel))
             {
-                return false;
-            }
+                // TOP EDGE
+                if (row == 0 && (col > 0 && col < 9))
+                {
+                    for (int i = 0; i < lengthVessel; i++)
+                    {
+                        this.playerBattlefield.SetSlot(i, col, BattlefieldElements.slotHit);
+                    }
+                }
+                // BOTTOM EDGE
+                else if (row == 9 && (col > 0 && col < 9))
+                {
+                    for (int i = 9; i > 9 - lengthVessel; i--)
+                    {
+                        this.playerBattlefield.SetSlot(i, col, BattlefieldElements.slotHit);
+                    }
+                }
+                // LEFT EDGE
+                else if (col == 0 && (row > 0 && row < 9))
+                {
+                    for (int i = 0; i < lengthVessel; i++)
+                    {
+                        this.playerBattlefield.SetSlot(row, i, BattlefieldElements.slotHit);
+                    }
+                }
+                // RIGHT EDGE
+                else if (col == 9 && (row > 0 && row < 9))
+                {
+                    for (int i = 9; i > 9 - lengthVessel; i--)
+                    {
+                        this.playerBattlefield.SetSlot(row, i, BattlefieldElements.slotHit);
+                    }
+                }
+            }            
         }
     }
 }

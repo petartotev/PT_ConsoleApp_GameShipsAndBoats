@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Text;
 using System.Threading;
 
 namespace PT_Console_App_ShipsAndBoatsGame
 {
     public class GameScenario
     {
-        private static void PrintGameplayUI(Player player, int stage)
+        private static void PrintGameplayUI(Player player, Player opponent, int stage)
         {
             Console.Clear();
 
@@ -20,6 +18,9 @@ namespace PT_Console_App_ShipsAndBoatsGame
 
             Console.WriteLine($"   You:");
             Console.WriteLine(player.PlayerBattlefield.Print());
+
+            Console.WriteLine($"   What Opponent sees:");
+            Console.WriteLine(opponent.OpponentBattlefield.Print());
 
             Console.WriteLine(GameElements.GetLegend());
             Console.WriteLine(GameElements.GetLineSolid());
@@ -75,7 +76,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
             Console.WriteLine(GameElements.GetLineSolid());
 
             Battlefield instructionsBattlefield = new Battlefield();
-            instructionsBattlefield.SetRandomBattlefield();
+            instructionsBattlefield.SetNewRandomBattlefield();
 
             Thread.Sleep(1000);
             Console.WriteLine($"   Instructions:");
@@ -312,7 +313,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
             {     
                 while (true)
                 {
-                    PrintGameplayUI(player, stage);                                        
+                    PrintGameplayUI(player, opponent, stage);                                        
 
                     Random myRandom = new Random();
 
@@ -324,7 +325,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
                         rowRandom = myRandom.Next(0, 10);
                         colRandom = myRandom.Next(0, 10);
 
-                        if (opponent.OpponentBattlefield.Field[rowRandom, colRandom] != "/ ")
+                        if (opponent.OpponentBattlefield.Field[rowRandom, colRandom] != BattlefieldElements.slotHidden)
                         {
                             continue;
                         }                        
@@ -339,15 +340,19 @@ namespace PT_Console_App_ShipsAndBoatsGame
                     opponent.BotAttack(rowRandom, colRandom, playerAttackedSlotResult);
 
                     Console.WriteLine($" Opponent" + opponent.GetAttackMessage(playerAttackedSlotResult));
-                    Thread.Sleep(2500);
+                    Thread.Sleep(1750);
 
                     if (opponent.CheckIfWinner())
                     {
                         break;
                     }
 
-                    if (playerAttackedSlotResult == "T " || playerAttackedSlotResult == "S " || playerAttackedSlotResult == "C " || playerAttackedSlotResult == "B " || playerAttackedSlotResult == "X ")
+                    if (BattlefieldElements.slotsVessels.Contains(playerAttackedSlotResult))
                     {
+                        if (Battlefield.CheckIfSlotIsOnEdge(rowRandom,colRandom))
+                        {
+                            player.MarkDownThatYourWholeShipOnEdgeIsDestroyed(rowRandom, colRandom, playerAttackedSlotResult);
+                        }
                         continue;
                     }
                     else
@@ -363,7 +368,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
 
                 while (true)
                 {
-                    PrintGameplayUI(player, stage);
+                    PrintGameplayUI(player, opponent, stage);
 
                     int row = -1;
                     int col = -1;
@@ -417,14 +422,14 @@ namespace PT_Console_App_ShipsAndBoatsGame
                     player.Attack(row, col, opponentAttackedSlotResult);
 
                     Console.WriteLine($" You" + player.GetAttackMessage(opponentAttackedSlotResult));
-                    Thread.Sleep(2500);
+                    Thread.Sleep(1750);
 
                     if (player.CheckIfWinner())
                     {
                         break;
                     }
 
-                    if (opponentAttackedSlotResult == "T " || opponentAttackedSlotResult == "S " || opponentAttackedSlotResult == "C " || opponentAttackedSlotResult == "B " || opponentAttackedSlotResult == "X ")
+                    if (BattlefieldElements.slotsVessels.Contains(opponentAttackedSlotResult))
                     {
                         continue;
                     }
@@ -442,7 +447,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
                 stage++; // END OF STAGE
             }
 
-            PrintGameplayUI(player, stage);
+            PrintGameplayUI(player, opponent, stage);
 
             int didYouWin = 0;
 

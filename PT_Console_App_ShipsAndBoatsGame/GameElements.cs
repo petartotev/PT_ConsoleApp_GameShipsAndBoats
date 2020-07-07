@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
+﻿using System.Data.SqlClient;
 using System.Text;
-using System.Threading;
 
 namespace PT_Console_App_ShipsAndBoatsGame
 {

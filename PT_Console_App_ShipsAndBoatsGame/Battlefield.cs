@@ -1,24 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 
 namespace PT_Console_App_ShipsAndBoatsGame
 {
     public class Battlefield
     {
-        private const string slotOccuppied = ". ";
-        private const string slotEmpty = "  ";
-        private const string slotHidden = "/ ";
-
-        private const string slotFull = "B ";
-        private const string slotCarrier = "C ";
-        private const string slotSubmarine = "S ";
-        private const string slotTanker = "T ";
-        
-        private List<int[]> slotsFullCoordinates = new List<int[]>();
-
         private string[,] field = new string[10, 10];
-
+        
         public Battlefield()
         {
             SetEmptyBattlefield();
@@ -32,36 +20,6 @@ namespace PT_Console_App_ShipsAndBoatsGame
             }
         }
 
-        private void AddSlotsFullToList()
-        {
-            for (int row = 0; row < 10; row++)
-            {
-                for (int col = 0; col < 10; col++)
-                {
-                    if (field[row,col] == slotFull)
-                    {
-                        int[] coordinates = new int[2] { row, col };
-                        this.slotsFullCoordinates.Add(coordinates);
-                    }
-                }
-            }
-        }
-
-        private void SetLettersToFullSlots()
-        {
-            for (int i = 0; i < slotsFullCoordinates.Count; i++)
-            {
-                field[slotsFullCoordinates[i][0], slotsFullCoordinates[i][1]] = slotCarrier;
-            }
-            for (int j = 0; j < 14; j++)
-            {
-                field[slotsFullCoordinates[j][0], slotsFullCoordinates[j][1]] = slotSubmarine;
-            }
-            for (int k = 0; k < 4; k++)
-            {
-                field[slotsFullCoordinates[k][0], slotsFullCoordinates[k][1]] = slotTanker;
-            }
-        }
 
         private void SetEmptyBattlefield()
         {
@@ -69,595 +27,450 @@ namespace PT_Console_App_ShipsAndBoatsGame
             {
                 for (int col = 0; col < field.GetLength(1); col++)
                 {
-                    field[row, col] = slotHidden;
+                    field[row, col] = BattlefieldElements.slotHidden;
+                }
+            }
+        }
+          
+
+        private bool CheckIfSlotIsEmptyOrOccuppied(int row, int col)
+        {
+            if (this.field[row, col] == BattlefieldElements.slotHidden || this.field[row, col] == BattlefieldElements.slotOccuppied)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private bool CheckIfAllSlotsAroundAreEmptyOrOccuppied(int row, int col)
+        {
+            for (int i = row - 1; i <= row + 1; i++)
+            {
+                for (int j = col - 1; j <= col + 1; j++)
+                {
+                    if ((i >= 0 && i <= 9 && j >= 0 && j <= 9) && (this.field[i, j] != BattlefieldElements.slotHidden && this.field[i, j] != BattlefieldElements.slotOccuppied))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        private bool CheckIfPlacingVesselOnEdgeIsPossible(int row, int col, string vessel)
+        {
+            int lengthVessel = BattlefieldElements.GetVesselLength(vessel);
+
+            // IF ON TOP EDGE
+            if (row == 0 && (col > 0 && col < 9))
+            {
+                for (int i = 0; i <= lengthVessel; i++)
+                {
+                    for (int j = col - 1; j <= col + 1; j++)
+                    {
+                        if (this.field[i, j] != BattlefieldElements.slotOccuppied && this.field[i, j] != BattlefieldElements.slotHidden)
+                        {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+            // IF ON BOTTOM EDGE
+            else if (row == 9 && (col > 0 && col < 9))
+            {
+                for (int i = 9; i >= 9 - lengthVessel; i--)
+                {
+                    for (int j = col - 1; j <= col + 1; j++)
+                    {
+                        if (this.field[i, j] != BattlefieldElements.slotOccuppied && this.field[i, j] != BattlefieldElements.slotHidden)
+                        {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+            // IF ON LEFT EDGE
+            else if ((row > 0 && row < 9) && col == 0)
+            {
+                for (int i = row - 1; i <= row + 1; i++)
+                {
+                    for (int j = 0; j <= lengthVessel; j++)
+                    {
+                        if (this.field[i, j] != BattlefieldElements.slotOccuppied && this.field[i, j] != BattlefieldElements.slotHidden)
+                        {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+            // IF ON RIGHT EDGE
+            else if ((row > 0 && row < 9) && col == 9)
+            {
+                for (int i = row - 1; i <= row + 1; i++)
+                {
+                    for (int j = 9; j >= 9 - lengthVessel; j--)
+                    {
+                        if (this.field[i, j] != BattlefieldElements.slotOccuppied && this.field[i, j] != BattlefieldElements.slotHidden)
+                        {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private bool CheckIfPlacingVesselInTheMiddleIsPossible(int row, int col, int orientation, string vessel)
+        {
+            int vesselLength = BattlefieldElements.GetVesselLength(vessel);
+
+            //HORIZONTAL ORIENTATION
+            if (orientation == 0)
+            {
+                // LEFT HALF GOING RIGHT
+                if (col >= 0 && col <= 4)
+                {
+                    for (int i = row - 1; i <= row + 1; i++)
+                    {
+                        for (int j = col - 1; j <= col + vesselLength; j++)
+                        {
+                            if ((i >= 0 && i <= 9 && j >= 0 && j <= 9) && (this.field[i,j] != BattlefieldElements.slotOccuppied && this.field[i, j] != BattlefieldElements.slotHidden))
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                    return true;
+                }
+                // RIGHT HALF GOING LEFT
+                else
+                {
+                    for (int i = row - 1; i <= row + 1; i++)
+                    {
+                        for (int j = col + 1; j >= col - vesselLength; j--)
+                        {
+                            if ((i >= 0 && i <= 9 && j >= 0 && j <= 9) && (this.field[i, j] != BattlefieldElements.slotOccuppied && this.field[i, j] != BattlefieldElements.slotHidden))
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                    return true;
+                }
+            }
+            // VERTICAL ORIENTATION
+            else
+            {
+                // UPPER PART GOING DOWN
+                if (row >= 0 && row <= 4)
+                {
+                    for (int i = row - 1; i <= row + vesselLength; i++)
+                    {
+                        for (int j = col - 1; j <= col + 1; j++)
+                        {
+                            if ((i >= 0 && i <= 9 && j >= 0 && j <= 9) && (this.field[i, j] != BattlefieldElements.slotOccuppied && this.field[i, j] != BattlefieldElements.slotHidden))
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                    return true;
+                }
+                // LOWER PART GOING UP
+                else
+                {
+                    for (int i = row + 1; i >= row - vesselLength; i--)
+                    {
+                        for (int j = col - 1; j <= col + 1; j++)
+                        {
+                            if ((i >= 0 && i <= 9 && j >= 0 && j <= 9) && (this.field[i, j] != BattlefieldElements.slotOccuppied && this.field[i, j] != BattlefieldElements.slotHidden))
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                    return true;
                 }
             }
         }
 
-        public void SetRandomBattlefield()
+
+        private void PlaceVesselOnEdge(int row, int col, string vessel)
+        {
+            int lengthVessel = BattlefieldElements.GetVesselLength(vessel);
+
+            // UPPER EDGE
+            if (row == 0 && (col > 0 && col < 9))
+            {
+                for (int i = 0; i <= lengthVessel; i++)
+                {
+                    for (int j = col - 1; j <= col + 1; j++)
+                    {
+                        this.field[i, j] = BattlefieldElements.slotOccuppied;
+                        if (j == col && i != lengthVessel)
+                        {
+                            this.field[i, j] = vessel;
+                        }
+                    }
+                }
+            }
+            // LOWER EDGE
+            else if (row == 9 && (col > 0 && col < 9))
+            {
+                for (int i = 9; i >= 9 - lengthVessel; i--)
+                {
+                    for (int j = col - 1; j <= col + 1; j++)
+                    {
+                        this.field[i, j] = BattlefieldElements.slotOccuppied;
+
+                        if (j == col && i != 9 - lengthVessel)
+                        {
+                            this.field[i, j] = vessel;
+                        }
+                    }
+                }
+            }
+            // LEFT EDGE
+            else if ((row > 0 && row < 9) && col == 0)
+            {
+                for (int i = row - 1; i <= row + 1; i++)
+                {
+                    for (int j = 0; j <= lengthVessel; j++)
+                    {
+                        this.field[i, j] = BattlefieldElements.slotOccuppied;
+                        if (i == row && j != lengthVessel)
+                        {
+                            this.field[i, j] = vessel;
+                        }
+                    }
+                }
+            }
+            // RIGHT EDGE
+            else if ((row > 0 && row < 9) && col == 9)
+            {
+                for (int i = row - 1; i <= row + 1; i++)
+                {
+                    for (int j = 9; j >= 9 - lengthVessel; j--)
+                    {
+                        this.field[i, j] = BattlefieldElements.slotOccuppied;
+                        if (i == row && j != 9 - lengthVessel)
+                        {
+                            this.field[i, j] = vessel;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void PlaceVesselInTheMiddle(int row, int col, int orientation, string vessel)
+        {
+            int vesselLength = BattlefieldElements.GetVesselLength(vessel);
+
+            //HORIZONTAL ORIENTATION
+            if (orientation == 0)
+            {
+                // LEFT HALF GOING RIGHT
+                if (col >= 0 && col <= 4)
+                {
+                    for (int i = row - 1; i <= row + 1; i++)
+                    {
+                        for (int j = col - 1; j < col + vesselLength; j++)
+                        {
+                            if ((i >= 0 && i <= 9 && j >= 0 && j <= 9) && (this.field[i, j] != BattlefieldElements.slotOccuppied || this.field[i, j] != BattlefieldElements.slotHidden))
+                            {
+                                this.field[i, j] = BattlefieldElements.slotOccuppied;
+                            }
+
+                            if ((i >= 0 && i <= 9 && j >= 0 && j <= 9) && (i == row) && (j != col - 1 && j != col + vesselLength))
+                            {
+                                this.field[i, j] = vessel;
+                            }
+                        }
+                    }
+                }
+                // RIGHT HALF GOING LEFT
+                else
+                {
+                    for (int i = row - 1; i <= row + 1; i++)
+                    {
+                        for (int j = col + 1; j >= col - vesselLength; j--)
+                        {
+                            if ((i >= 0 && i <= 9 && j >= 0 && j <= 9) && (this.field[i, j] != BattlefieldElements.slotOccuppied || this.field[i, j] != BattlefieldElements.slotHidden))
+                            {
+                                this.field[i, j] = BattlefieldElements.slotOccuppied;
+                            }
+
+                            if ((i >= 0 && i <= 9 && j >= 0 && j <= 9) && i == row && (j != col + 1 && j != col - vesselLength))
+                            {
+                                this.field[i, j] = vessel;
+                            }
+                        }
+                    }
+                }
+            }
+            // VERTICAL ORIENTATION
+            else
+            {
+                // UPPER PART GOING DOWN
+                if (row >= 0 && row <= 4)
+                {
+                    for (int i = row - 1; i <= row + vesselLength; i++)
+                    {
+                        for (int j = col - 1; j <= col + 1; j++)
+                        {
+                            if ((i >= 0 && i <= 9 && j >= 0 && j <= 9) && (this.field[i, j] != BattlefieldElements.slotOccuppied || this.field[i, j] != BattlefieldElements.slotHidden))
+                            {
+                                this.field[i, j] = BattlefieldElements.slotOccuppied;
+                            }
+
+                            if ((i >= 0 && i <= 9 && j >= 0 && j <= 9) && j == col && (i != row - 1 && i != row + vesselLength))
+                            {
+                                this.field[i, j] = vessel;
+                            }
+                        }
+                    }
+                }
+                // LOWER PART GOING UP
+                else
+                {
+                    for (int i = row + 1; i >= row - vesselLength; i--)
+                    {
+                        for (int j = col - 1; j <= col + 1; j++)
+                        {
+                            if ((i >= 0 && i <= 9 && j >= 0 && j <= 9) && (this.field[i, j] != BattlefieldElements.slotOccuppied || this.field[i, j] != BattlefieldElements.slotHidden))
+                            {
+                                this.field[i, j] = BattlefieldElements.slotOccuppied;
+                            }
+
+                            if ((i >= 0 && i <= 9 && j >= 0 && j <= 9) && (j == col) && (i != row + 1 && i != row - vesselLength))
+                            {
+                                this.field[i, j] = vessel;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void PlaceBoat(int row, int col)
+        {
+            for (int i = row - 1; i <= row + 1; i++)
+            {
+                for (int j = col - 1; j <= col + 1; j++)
+                {
+                    if ((i >= 0 && i <= 9 && j >= 0 && j <= 9))
+                    {
+                        this.field[i, j] = BattlefieldElements.slotOccuppied;
+                    }
+                }
+            }
+            this.field[row, col] = BattlefieldElements.slotBoat;
+        }
+
+
+
+        public void SetNewRandomBattlefield()
         {
             Random rndm = new Random();
 
-            // 1 x TANKER
-            while (true)
+            //LOOP THROUGH PLACING THE 10 VESSELS (1 TANKER => 2 SUBMARINES => 3 CARRIERS => 4 BOATS)
+            for (int vesselCount = 1; vesselCount <= 10; vesselCount++)
             {
-                int rowRandom = rndm.Next(0, 10);
-                int colRandom = rndm.Next(0, 10);
-                int horizontalOrVertical = rndm.Next(0, 2);
-                int zeroOrOne = rndm.Next(0, 2);
+                string vessel = string.Empty;
 
-                if ((rowRandom == 0 && colRandom == 0) || (rowRandom == 0 && colRandom == 9) || (rowRandom == 9 && colRandom == 0) || (rowRandom == 9 && colRandom == 9))
+                // GET THE TYPE OF VESSEL BASED ON VESSELCOUNT
+                switch (vesselCount)
                 {
-                    continue;
-                } // CORNER ISSUE - TRY AGAIN
-                else if (rowRandom == 0)
-                {
-                    this.field[rowRandom, colRandom] = this.field[rowRandom + 1, colRandom] = this.field[rowRandom + 2, colRandom] = this.field[rowRandom + 3, colRandom] = slotFull;
+                    case 1:
+                        vessel = BattlefieldElements.slotTanker;
+                        break;
+                    case 2:
+                    case 3:
+                        vessel = BattlefieldElements.slotSubmarine;
+                        break;
+                    case 4:
+                    case 5:
+                    case 6:
+                        vessel = BattlefieldElements.slotCarrier;
+                        break;
+                    case 7:
+                    case 8:
+                    case 9:
+                    case 10:
+                        vessel = BattlefieldElements.slotBoat;
+                        break;
+                }
 
-                    this.field[rowRandom, colRandom - 1] = this.field[rowRandom, colRandom + 1] = slotOccuppied;
-                    this.field[rowRandom + 1, colRandom - 1] = this.field[rowRandom + 1, colRandom + 1] = slotOccuppied;
-                    this.field[rowRandom + 2, colRandom - 1] = this.field[rowRandom + 2, colRandom + 1] = slotOccuppied;
-                    this.field[rowRandom + 3, colRandom - 1] = this.field[rowRandom + 3, colRandom + 1] = slotOccuppied;
-                    this.field[rowRandom + 4, colRandom - 1] = this.field[rowRandom + 4, colRandom + 1] = this.field[rowRandom + 4, colRandom] = slotOccuppied;
-                    break;
-                } // UPPER ROW EDGE SITUATION
-                else if (rowRandom == 9)
+                // PLACE TANKER / SUBMARINE / CARRIER
+                if (vesselCount >= 1 && vesselCount <= 6)
                 {
-                    this.field[rowRandom, colRandom] = this.field[rowRandom - 1, colRandom] = this.field[rowRandom - 2, colRandom] = this.field[rowRandom - 3, colRandom] = slotFull;
-
-                    this.field[rowRandom, colRandom - 1] = this.field[rowRandom, colRandom + 1] = slotOccuppied;
-                    this.field[rowRandom - 1, colRandom - 1] = this.field[rowRandom - 1, colRandom + 1] = slotOccuppied;
-                    this.field[rowRandom - 2, colRandom - 1] = this.field[rowRandom - 2, colRandom + 1] = slotOccuppied;
-                    this.field[rowRandom - 3, colRandom - 1] = this.field[rowRandom - 3, colRandom + 1] = slotOccuppied;
-                    this.field[rowRandom - 4, colRandom - 1] = this.field[rowRandom - 4, colRandom + 1] = this.field[rowRandom - 4, colRandom] = slotOccuppied;
-                    break;
-                } // LOWER ROW EDGE SITUATION
-                else if (colRandom == 0)
-                {
-                    this.field[rowRandom, colRandom] = this.field[rowRandom, colRandom + 1] = this.field[rowRandom, colRandom + 2] = this.field[rowRandom, colRandom + 3] = slotFull;
-
-                    this.field[rowRandom - 1, colRandom] = this.field[rowRandom + 1, colRandom] = slotOccuppied;
-                    this.field[rowRandom - 1, colRandom + 1] = this.field[rowRandom + 1, colRandom + 1] = slotOccuppied;
-                    this.field[rowRandom - 1, colRandom + 2] = this.field[rowRandom + 1, colRandom + 2] = slotOccuppied;
-                    this.field[rowRandom - 1, colRandom + 3] = this.field[rowRandom + 1, colRandom + 3] = slotOccuppied;
-                    this.field[rowRandom - 1, colRandom + 4] = this.field[rowRandom + 1, colRandom + 4] = slotOccuppied;
-                    this.field[rowRandom, colRandom + 4] = slotOccuppied;
-                    break;
-                } // LEFT COL EDGE SITUATION
-                else if (colRandom == 9)
-                {
-                    this.field[rowRandom, colRandom] = this.field[rowRandom, colRandom - 1] = this.field[rowRandom, colRandom - 2] = this.field[rowRandom, colRandom - 3] = slotFull;
-
-                    this.field[rowRandom - 1, colRandom] = this.field[rowRandom + 1, colRandom] = slotOccuppied;
-                    this.field[rowRandom - 1, colRandom - 1] = this.field[rowRandom + 1, colRandom - 1] = slotOccuppied;
-                    this.field[rowRandom - 1, colRandom - 2] = this.field[rowRandom + 1, colRandom - 2] = slotOccuppied;
-                    this.field[rowRandom - 1, colRandom - 3] = this.field[rowRandom + 1, colRandom - 3] = slotOccuppied;
-                    this.field[rowRandom - 1, colRandom - 4] = this.field[rowRandom + 1, colRandom - 4] = slotOccuppied;
-                    this.field[rowRandom, colRandom - 4] = slotOccuppied;
-                    break;
-                } // RIGHT COL EDGE SITUATION
-                else 
-                {
-                    this.field[rowRandom, colRandom] = slotFull;
-
-                    if (horizontalOrVertical == 0)
+                    while (true)
                     {
-                        switch (colRandom)
+                        int rowRandom = rndm.Next(0, 10);
+                        int colRandom = rndm.Next(0, 10);
+                        int horizontalOrVertical = rndm.Next(0, 2);
+
+                        // IS IT IN CORNER?
+                        if (CheckIfSlotIsInCorner(rowRandom, colRandom))
                         {
-                            case 1:
-                            case 2:
-                            case 3:
-                            case 4:
-                            case 5:
-                                this.field[rowRandom, colRandom + 1] = this.field[rowRandom, colRandom + 2] = this.field[rowRandom, colRandom + 3] = slotFull;
-
-                                this.field[rowRandom - 1, colRandom - 1] = this.field[rowRandom + 1, colRandom - 1] = slotOccuppied;
-                                this.field[rowRandom - 1, colRandom + 0] = this.field[rowRandom + 1, colRandom + 0] = slotOccuppied;
-                                this.field[rowRandom - 1, colRandom + 1] = this.field[rowRandom + 1, colRandom + 1] = slotOccuppied;
-                                this.field[rowRandom - 1, colRandom + 2] = this.field[rowRandom + 1, colRandom + 2] = slotOccuppied;
-                                this.field[rowRandom - 1, colRandom + 3] = this.field[rowRandom + 1, colRandom + 3] = slotOccuppied;
-                                this.field[rowRandom - 1, colRandom + 4] = this.field[rowRandom + 1, colRandom + 4] = slotOccuppied;
-                                this.field[rowRandom, colRandom - 1] = this.field[rowRandom, colRandom + 4] = slotOccuppied;
+                            continue;
+                        }
+                        // IS IT ON EDGE?
+                        else if (CheckIfSlotIsOnEdge(rowRandom, colRandom))
+                        {
+                            if (CheckIfPlacingVesselOnEdgeIsPossible(rowRandom, colRandom, vessel))
+                            {
+                                PlaceVesselOnEdge(rowRandom, colRandom, vessel);
                                 break;
-                            case 6:
-                                this.field[rowRandom, colRandom + 1] = this.field[rowRandom, colRandom + 2] = this.field[rowRandom, colRandom + 3] = slotFull;
-
-                                this.field[rowRandom - 1, colRandom - 1] = this.field[rowRandom + 1, colRandom - 1] = slotOccuppied;
-                                this.field[rowRandom - 1, colRandom + 0] = this.field[rowRandom + 1, colRandom + 0] = slotOccuppied;
-                                this.field[rowRandom - 1, colRandom + 1] = this.field[rowRandom + 1, colRandom + 1] = slotOccuppied;
-                                this.field[rowRandom - 1, colRandom + 2] = this.field[rowRandom + 1, colRandom + 2] = slotOccuppied;
-                                this.field[rowRandom - 1, colRandom + 3] = this.field[rowRandom + 1, colRandom + 3] = slotOccuppied;
-                                this.field[rowRandom, colRandom - 1] = slotOccuppied;
-                                break;
-                            case 7:
-                                this.field[rowRandom, colRandom - 1] = this.field[rowRandom, colRandom + 1] = slotFull;
-
-                                this.field[rowRandom - 1, colRandom - 2] = this.field[rowRandom + 1, colRandom - 2] = slotOccuppied;
-                                this.field[rowRandom - 1, colRandom - 1] = this.field[rowRandom + 1, colRandom - 1] = slotOccuppied;
-                                this.field[rowRandom - 1, colRandom - 0] = this.field[rowRandom + 1, colRandom - 0] = slotOccuppied;
-                                this.field[rowRandom - 1, colRandom + 1] = this.field[rowRandom + 1, colRandom + 1] = slotOccuppied;
-                                this.field[rowRandom - 1, colRandom + 2] = this.field[rowRandom + 1, colRandom + 2] = slotOccuppied;
-
-                                if (zeroOrOne == 0)
+                            }
+                        }
+                        // IS IT IN THE MIDDLE?
+                        else
+                        {
+                            // HORIZONTAL
+                            if (horizontalOrVertical == 0)
+                            {
+                                if (CheckIfPlacingVesselInTheMiddleIsPossible(rowRandom, colRandom, horizontalOrVertical, vessel))
                                 {
-                                    this.field[rowRandom, colRandom - 2] = slotFull;
-
-                                    this.field[rowRandom, colRandom + 2] = this.field[rowRandom, colRandom - 3] = this.field[rowRandom + 1, colRandom - 3] = this.field[rowRandom - 1, colRandom - 3] = slotOccuppied;
+                                    PlaceVesselInTheMiddle(rowRandom, colRandom, horizontalOrVertical, vessel);
+                                    break;
                                 }
-                                else
+                            }
+                            // VERTICAL
+                            else
+                            {
+                                if (CheckIfPlacingVesselInTheMiddleIsPossible(rowRandom, colRandom, horizontalOrVertical, vessel))
                                 {
-                                    this.field[rowRandom, colRandom + 2] = slotFull;
-
-                                    this.field[rowRandom, colRandom - 2] = slotOccuppied;
+                                    PlaceVesselInTheMiddle(rowRandom, colRandom, horizontalOrVertical, vessel);
+                                    break;
                                 }
-                                break;
-                            case 8:
-                                this.field[rowRandom, colRandom - 1] = this.field[rowRandom, colRandom - 2] = slotFull;
-
-                                this.field[rowRandom - 1, colRandom - 3] = this.field[rowRandom + 1, colRandom - 3] = slotOccuppied;
-                                this.field[rowRandom - 1, colRandom - 2] = this.field[rowRandom + 1, colRandom - 2] = slotOccuppied;
-                                this.field[rowRandom - 1, colRandom - 1] = this.field[rowRandom + 1, colRandom - 1] = slotOccuppied;
-                                this.field[rowRandom - 1, colRandom + 0] = this.field[rowRandom + 1, colRandom + 0] = slotOccuppied;
-                                this.field[rowRandom - 1, colRandom + 1] = this.field[rowRandom + 1, colRandom + 1] = slotOccuppied;
-
-                                if (zeroOrOne == 0)
-                                {
-                                    this.field[rowRandom, colRandom - 3] = slotFull;
-
-                                    this.field[rowRandom, colRandom + 1] = slotOccuppied;
-                                    this.field[rowRandom - 1, colRandom - 4] = this.field[rowRandom, colRandom - 4] = this.field[rowRandom + 1, colRandom - 4] = slotOccuppied;
-                                }
-                                else
-                                {
-                                    this.field[rowRandom, colRandom + 1] = slotFull;
-
-                                    this.field[rowRandom, colRandom - 3] = slotOccuppied;
-                                }
-                                break;
+                            }
                         }
                     }
-                    else if (horizontalOrVertical == 1)
+                }
+                // PLACE BOAT
+                else
+                {
+                    while (true)
                     {
-                        switch (rowRandom)
+                        int rowRandom = rndm.Next(0, 10);
+                        int colRandom = rndm.Next(0, 10);
+
+                        if (CheckIfAllSlotsAroundAreEmptyOrOccuppied(rowRandom, colRandom))
                         {
-                            case 1:
-                            case 2:
-                            case 3:
-                            case 4:
-                            case 5:
-                                this.field[rowRandom + 1, colRandom] = this.field[rowRandom + 2, colRandom] = this.field[rowRandom + 3, colRandom] = slotFull;
-
-                                this.field[rowRandom - 1, colRandom - 1] = this.field[rowRandom - 1, colRandom] = this.field[rowRandom - 1, colRandom + 1] = slotOccuppied; 
-                                this.field[rowRandom, colRandom - 1] = this.field[rowRandom , colRandom + 1] = slotOccuppied;
-                                this.field[rowRandom + 1, colRandom - 1] = this.field[rowRandom + 1, colRandom + 1] = slotOccuppied;
-                                this.field[rowRandom + 2, colRandom - 1] = this.field[rowRandom + 2, colRandom + 1] = slotOccuppied;
-                                this.field[rowRandom + 3, colRandom - 1] = this.field[rowRandom + 3, colRandom + 1] = slotOccuppied;
-                                this.field[rowRandom + 4, colRandom - 1] = this.field[rowRandom + 4, colRandom] = this.field[rowRandom + 4, colRandom + 1] = slotOccuppied;
-
-                                break;
-                            case 6:
-                                this.field[rowRandom + 1, colRandom] = this.field[rowRandom + 2, colRandom] = this.field[rowRandom + 3, colRandom] = slotFull;
-
-                                this.field[rowRandom - 1, colRandom - 1] = this.field[rowRandom - 1, colRandom] = this.field[rowRandom - 1, colRandom + 1] = slotOccuppied;
-                                this.field[rowRandom, colRandom - 1] = this.field[rowRandom, colRandom + 1] = slotOccuppied;
-                                this.field[rowRandom + 1, colRandom - 1] = this.field[rowRandom + 1, colRandom + 1] = slotOccuppied;
-                                this.field[rowRandom + 2, colRandom - 1] = this.field[rowRandom + 2, colRandom + 1] = slotOccuppied;
-                                this.field[rowRandom + 3, colRandom - 1] = this.field[rowRandom + 3, colRandom + 1] = slotOccuppied;
-                                break;
-                            case 7:
-                                this.field[rowRandom - 1, colRandom] = this.field[rowRandom + 1, colRandom] = slotFull;
-
-                                this.field[rowRandom - 2, colRandom - 1] = this.field[rowRandom - 2, colRandom + 1] = slotOccuppied;
-                                this.field[rowRandom - 1, colRandom - 1] = this.field[rowRandom - 1, colRandom + 1] = slotOccuppied;
-                                this.field[rowRandom - 0, colRandom - 1] = this.field[rowRandom - 0, colRandom + 1] = slotOccuppied;
-                                this.field[rowRandom + 1, colRandom - 1] = this.field[rowRandom + 1, colRandom + 1] = slotOccuppied;
-                                this.field[rowRandom + 2, colRandom - 1] = this.field[rowRandom + 2, colRandom + 1] = slotOccuppied;
-
-                                if (zeroOrOne == 0)
-                                {
-                                    this.field[rowRandom - 2, colRandom] = slotFull;
-
-                                    this.field[rowRandom - 3, colRandom - 1] = this.field[rowRandom - 3, colRandom] = this.field[rowRandom - 3, colRandom + 1] = slotOccuppied;
-                                    this.field[rowRandom + 2, colRandom] = slotOccuppied;
-                                }
-                                else
-                                {
-                                    this.field[rowRandom + 2, colRandom] = slotFull;
-
-                                    this.field[rowRandom - 2, colRandom] = slotOccuppied;
-                                }
-                                break;
-                            case 8:
-                                this.field[rowRandom - 1, colRandom] = this.field[rowRandom - 2, colRandom] = slotFull;
-
-                                this.field[rowRandom - 3, colRandom - 1] = this.field[rowRandom - 3, colRandom + 1] = slotOccuppied;
-                                this.field[rowRandom - 2, colRandom - 1] = this.field[rowRandom - 2, colRandom + 1] = slotOccuppied;
-                                this.field[rowRandom - 1, colRandom - 1] = this.field[rowRandom - 1, colRandom + 1] = slotOccuppied;
-                                this.field[rowRandom + 0, colRandom - 1] = this.field[rowRandom + 0, colRandom + 1] = slotOccuppied;
-                                this.field[rowRandom + 1, colRandom - 1] = this.field[rowRandom + 1, colRandom + 1] = slotOccuppied;
-
-                                if (zeroOrOne == 0)
-                                {
-                                    this.field[rowRandom - 3, colRandom] = slotFull;
-
-                                    this.field[rowRandom - 4, colRandom - 1] = this.field[rowRandom - 4, colRandom] = this.field[rowRandom - 4, colRandom + 1] = slotOccuppied;
-                                    this.field[rowRandom + 1, colRandom] = slotOccuppied;
-                                }
-                                else
-                                {
-                                    this.field[rowRandom + 1, colRandom] = slotFull;
-
-                                    this.field[rowRandom -3, colRandom] = slotOccuppied;
-                                }
-                                break;
+                            PlaceBoat(rowRandom, colRandom);
+                            break;
                         }
                     }
-
-                    break;
-                } // SOMEWHERE IN THE MIDDLE                
-            }
-
-            AddSlotsFullToList();
-
-            // 2 x SUBMARINE
-            for (int i = 1; i <= 2; i++)
-            {
-                while (true)
-                {
-                    int rowR = rndm.Next(0, 10);
-                    int colR = rndm.Next(0, 10);
-                    int horizontalOrVertical = rndm.Next(0, 2);
-                    int zeroOrOne = rndm.Next(0, 2);
-
-                    if ((rowR == 0 && colR == 0) || (rowR == 0 && colR == 9) || (rowR == 9 && colR == 0) || (rowR == 9 && colR == 9))
-                    {
-                        continue;
-                    } // CORNER ISSUE - TRY AGAIN
-                    else if (rowR == 0 &&
-                        (this.field[rowR, colR] != slotFull) && (this.field[rowR, colR - 1] != slotFull) && (this.field[rowR, colR + 1] != slotFull) &&
-                        (this.field[rowR + 1, colR] != slotFull) && (this.field[rowR + 1, colR - 1] != slotFull) && (this.field[rowR + 1, colR + 1] != slotFull) &&
-                        (this.field[rowR + 2, colR] != slotFull) && (this.field[rowR + 2, colR - 1] != slotFull) && (this.field[rowR + 2, colR + 1] != slotFull) &&
-                        (this.field[rowR + 3, colR] != slotFull) && (this.field[rowR + 3, colR - 1] != slotFull) && (this.field[rowR + 3, colR + 1] != slotFull))
-                    {
-                        this.field[rowR, colR] = this.field[rowR + 1, colR] = this.field[rowR + 2, colR] = slotFull;
-
-                        this.field[rowR, colR - 1] = this.field[rowR, colR + 1] = slotOccuppied;
-                        this.field[rowR + 1, colR - 1] = this.field[rowR + 1, colR + 1] = slotOccuppied;
-                        this.field[rowR + 2, colR - 1] = this.field[rowR + 2, colR + 1] = slotOccuppied;
-                        this.field[rowR + 3, colR - 1] = this.field[rowR + 3, colR + 1] = this.field[rowR + 3, colR] = slotOccuppied;
-
-                        break;
-                    }
-                    else if (rowR == 9 &&
-                        (this.field[rowR, colR] != slotFull) && (this.field[rowR, colR - 1] != slotFull) && (this.field[rowR, colR + 1] != slotFull) &&
-                        (this.field[rowR - 1, colR] != slotFull) && (this.field[rowR - 1, colR - 1] != slotFull) && (this.field[rowR - 1, colR + 1] != slotFull) &&
-                        (this.field[rowR - 2, colR] != slotFull) && (this.field[rowR - 2, colR - 1] != slotFull) && (this.field[rowR - 2, colR + 1] != slotFull) &&
-                        (this.field[rowR - 3, colR] != slotFull) && (this.field[rowR - 3, colR - 1] != slotFull) && (this.field[rowR - 3, colR + 1] != slotFull))
-                    {
-                        this.field[rowR, colR] = this.field[rowR - 1, colR] = this.field[rowR - 2, colR] = slotFull;
-
-                        this.field[rowR, colR - 1] = this.field[rowR, colR + 1] = slotOccuppied;
-                        this.field[rowR - 1, colR - 1] = this.field[rowR - 1, colR + 1] = slotOccuppied;
-                        this.field[rowR - 2, colR - 1] = this.field[rowR - 2, colR + 1] = slotOccuppied;
-                        this.field[rowR - 3, colR - 1] = this.field[rowR - 3, colR + 1] = this.field[rowR - 3, colR] = slotOccuppied;
-
-                        break;
-                    }
-                    else if (colR == 0 &&
-                        (this.field[rowR - 1, colR] != slotFull && this.field[rowR, colR] != slotFull && this.field[rowR + 1, colR] != slotFull) &&
-                        (this.field[rowR - 1, colR + 1] != slotFull && this.field[rowR, colR + 1] != slotFull && this.field[rowR + 1, colR + 1] != slotFull) &&
-                        (this.field[rowR - 1, colR + 2] != slotFull && this.field[rowR, colR + 2] != slotFull && this.field[rowR + 1, colR + 2] != slotFull) &&
-                        (this.field[rowR - 1, colR + 3] != slotFull && this.field[rowR, colR + 3] != slotFull && this.field[rowR + 1, colR + 3] != slotFull))
-                    {
-                        this.field[rowR, colR] = this.field[rowR, colR + 1] = this.field[rowR, colR + 2] = slotFull;
-
-                        this.field[rowR - 1, colR] = this.field[rowR - 1, colR + 1] = this.field[rowR - 1, colR + 2] = this.field[rowR - 1, colR + 3] = slotOccuppied;
-                        this.field[rowR, colR + 3] = slotOccuppied;
-                        this.field[rowR + 1, colR] = this.field[rowR + 1, colR + 1] = this.field[rowR + 1, colR + 2] = this.field[rowR + 1, colR + 3] = slotOccuppied;
-
-                        break;
-                    }
-                    else if (colR == 9 &&
-                        (this.field[rowR - 1, colR] != slotFull && this.field[rowR, colR] != slotFull && this.field[rowR + 1, colR] != slotFull) &&
-                        (this.field[rowR - 1, colR - 1] != slotFull && this.field[rowR, colR - 1] != slotFull && this.field[rowR + 1, colR - 1] != slotFull) &&
-                        (this.field[rowR - 1, colR - 2] != slotFull && this.field[rowR, colR - 2] != slotFull && this.field[rowR + 1, colR - 2] != slotFull) &&
-                        (this.field[rowR - 1, colR - 3] != slotFull && this.field[rowR, colR - 3] != slotFull && this.field[rowR + 1, colR - 3] != slotFull))
-                    {
-                        this.field[rowR, colR] = this.field[rowR, colR - 1] = this.field[rowR, colR - 2] = slotFull;
-
-                        this.field[rowR - 1, colR] = this.field[rowR - 1, colR - 1] = this.field[rowR - 1, colR - 2] = this.field[rowR - 1, colR - 3] = slotOccuppied;
-                        this.field[rowR, colR - 3] = slotOccuppied;
-                        this.field[rowR + 1, colR] = this.field[rowR + 1, colR - 1] = this.field[rowR + 1, colR - 2] = this.field[rowR + 1, colR - 3] = slotOccuppied;
-
-                        break;
-                    }
-                    else if (horizontalOrVertical == 0 && colR == 1 &&
-                        (this.field[rowR, colR - 1] != slotFull && this.field[rowR, colR] != slotFull && this.field[rowR, colR + 1] != slotFull && this.field[rowR, colR + 2] != slotFull) &&
-                        (this.field[rowR - 1, colR - 1] != slotFull && this.field[rowR - 1, colR] != slotFull && this.field[rowR - 1, colR + 1] != slotFull && this.field[rowR - 1, colR + 2] != slotFull) &&
-                        (this.field[rowR + 1, colR - 1] != slotFull && this.field[rowR + 1, colR] != slotFull && this.field[rowR + 1, colR + 1] != slotFull && this.field[rowR + 1, colR + 2] != slotFull))
-                    {
-                        this.field[rowR, colR - 1] = this.field[rowR, colR] = this.field[rowR, colR + 1] = slotFull;
-                        this.field[rowR, colR + 2] = slotOccuppied;
-                        this.field[rowR - 1, colR - 1] = this.field[rowR - 1, colR] = this.field[rowR - 1, colR + 1] = this.field[rowR - 1, colR + 2] = slotOccuppied;
-                        this.field[rowR + 1, colR - 1] = this.field[rowR + 1, colR] = this.field[rowR + 1, colR + 1] = this.field[rowR + 1, colR + 2] = slotOccuppied;
-
-                        break;
-                    }
-                    else if (horizontalOrVertical == 0 && colR == 8 && rowR != 0 && rowR != 8 &&
-                        (this.field[rowR, colR - 2] != slotFull && this.field[rowR, colR - 1] != slotFull && this.field[rowR, colR] != slotFull && this.field[rowR, colR + 1] != slotFull) &&
-                        (this.field[rowR - 1, colR - 2] != slotFull && this.field[rowR - 1, colR - 1] != slotFull && this.field[rowR - 1, colR] != slotFull && this.field[rowR - 1, colR + 1] != slotFull) &&
-                        (this.field[rowR + 1, colR - 2] != slotFull && this.field[rowR + 1, colR - 1] != slotFull && this.field[rowR + 1, colR] != slotFull && this.field[rowR + 1, colR + 1] != slotFull))
-                    {
-                        this.field[rowR, colR - 1] = this.field[rowR, colR] = this.field[rowR, colR + 1] = slotFull;
-                        this.field[rowR, colR - 2] = slotOccuppied;
-                        this.field[rowR - 1, colR - 2] = this.field[rowR - 1, colR - 1] = this.field[rowR - 1, colR] = this.field[rowR - 1, colR + 1] = slotOccuppied;
-                        this.field[rowR + 1, colR - 2] = this.field[rowR + 1, colR - 1] = this.field[rowR + 1, colR] = this.field[rowR + 1, colR + 1] = slotOccuppied;
-
-                        break;
-                    }
-                    else if (horizontalOrVertical == 0 && (colR == 2 || colR == 3 || colR == 4 || colR == 5 || colR == 6 || colR == 7) && (rowR != 0) && (rowR != 9) && 
-                        (this.field[rowR, colR - 2] != slotFull && this.field[rowR, colR - 1] != slotFull && this.field[rowR, colR] != slotFull && this.field[rowR, colR + 1] != slotFull && this.field[rowR, colR + 2] != slotFull) &&
-                        (this.field[rowR - 1, colR - 2] != slotFull && this.field[rowR - 1, colR - 1] != slotFull && this.field[rowR - 1, colR] != slotFull && this.field[rowR - 1, colR + 1] != slotFull && this.field[rowR - 1, colR + 2] != slotFull) &&
-                        (this.field[rowR + 1, colR - 2] != slotFull && this.field[rowR + 1, colR - 1] != slotFull && this.field[rowR + 1, colR] != slotFull && this.field[rowR + 1, colR + 1] != slotFull && this.field[rowR + 1, colR + 2] != slotFull))
-                    {
-                        this.field[rowR, colR - 1] = this.field[rowR, colR] = this.field[rowR, colR + 1] = slotFull;
-
-                        this.field[rowR, colR - 2] = this.field[rowR, colR + 2] = slotOccuppied;
-                        this.field[rowR - 1, colR - 2] = this.field[rowR - 1, colR - 1] = this.field[rowR - 1, colR] = this.field[rowR - 1, colR + 1] = this.field[rowR - 1, colR + 2] = slotOccuppied;
-                        this.field[rowR + 1, colR - 2] = this.field[rowR + 1, colR - 1] = this.field[rowR + 1, colR] = this.field[rowR + 1, colR + 1] = this.field[rowR + 1, colR + 2] = slotOccuppied;
-
-                        break;
-                    }
-                    else if (horizontalOrVertical == 1 && rowR == 1 &&
-                        (this.field[rowR - 1, colR - 1] != slotFull && this.field[rowR - 1, colR] != slotFull && this.field[rowR - 1, colR + 1] != slotFull) &&
-                        (this.field[rowR, colR - 1] != slotFull && this.field[rowR, colR] != slotFull && this.field[rowR, colR + 1] != slotFull) &&
-                        (this.field[rowR + 1, colR - 1] != slotFull && this.field[rowR + 1, colR] != slotFull && this.field[rowR + 1, colR + 1] != slotFull) &&
-                        (this.field[rowR + 2, colR - 1] != slotFull && this.field[rowR + 2, colR] != slotFull && this.field[rowR + 2, colR + 1] != slotFull))
-                    {
-                        this.field[rowR - 1, colR] = this.field[rowR, colR] = this.field[rowR + 1, colR] = slotFull;
-
-                        this.field[rowR - 1, colR - 1] = this.field[rowR - 1, colR + 1] = slotOccuppied;
-                        this.field[rowR, colR - 1] = this.field[rowR, colR + 1] = slotOccuppied;
-                        this.field[rowR + 1, colR - 1] = this.field[rowR + 1, colR + 1] = slotOccuppied;
-                        this.field[rowR + 2, colR - 1] = this.field[rowR + 2, colR] = this.field[rowR + 2, colR + 1] = slotOccuppied;
-
-                        break;
-                    }
-                    else if (horizontalOrVertical == 1 && rowR == 8 && (colR != 0) && (colR != 9) &&
-                        (this.field[rowR - 2, colR - 1] != slotFull && this.field[rowR - 2, colR] != slotFull && this.field[rowR - 2, colR + 1] != slotFull) &&
-                        (this.field[rowR - 1, colR - 1] != slotFull && this.field[rowR - 1, colR] != slotFull && this.field[rowR - 1, colR + 1] != slotFull) &&
-                        (this.field[rowR, colR - 1] != slotFull && this.field[rowR, colR] != slotFull && this.field[rowR, colR + 1] != slotFull) &&
-                        (this.field[rowR + 1, colR - 1] != slotFull && this.field[rowR + 1, colR] != slotFull && this.field[rowR + 1, colR + 1] != slotFull))
-                    {
-                        this.field[rowR - 1, colR] = this.field[rowR, colR] = this.field[rowR + 1, colR] = slotFull;
-
-                        this.field[rowR - 2, colR - 1] = this.field[rowR - 2, colR] = this.field[rowR - 2, colR + 1] = slotOccuppied;
-                        this.field[rowR - 1, colR - 1] = this.field[rowR - 1, colR + 1] = slotOccuppied;
-                        this.field[rowR, colR - 1] = this.field[rowR, colR + 1] = slotOccuppied;
-                        this.field[rowR + 1, colR - 1] = this.field[rowR + 1, colR + 1] = slotOccuppied;
-
-                        break;
-                    }
-                    else if (horizontalOrVertical == 1 && (rowR == 2 || rowR == 3 || rowR == 4 || rowR == 5 || rowR == 6 || rowR == 7) && (colR != 0) && (colR != 9) &&
-                        (this.field[rowR - 2, colR - 1] != slotFull && this.field[rowR - 2, colR] != slotFull && this.field[rowR - 2, colR + 1] != slotFull) &&
-                        (this.field[rowR - 1, colR - 1] != slotFull && this.field[rowR - 1, colR] != slotFull && this.field[rowR - 1, colR + 1] != slotFull) &&
-                        (this.field[rowR, colR - 1] != slotFull && this.field[rowR, colR] != slotFull && this.field[rowR, colR + 1] != slotFull) &&
-                        (this.field[rowR + 1, colR - 1] != slotFull && this.field[rowR + 1, colR] != slotFull && this.field[rowR + 1, colR + 1] != slotFull) &&
-                        (this.field[rowR + 2, colR - 1] != slotFull && this.field[rowR + 2, colR] != slotFull && this.field[rowR + 2, colR + 1] != slotFull))
-                    {
-                        this.field[rowR - 1, colR] = this.field[rowR, colR] = this.field[rowR + 1, colR] = slotFull;
-
-                        this.field[rowR - 2, colR - 1] = this.field[rowR - 2, colR] = this.field[rowR - 2, colR + 1] = slotOccuppied;
-                        this.field[rowR - 1, colR - 1] = this.field[rowR - 1, colR + 1] = slotOccuppied;
-                        this.field[rowR, colR - 1] = this.field[rowR, colR + 1] = slotOccuppied;
-                        this.field[rowR + 1, colR - 1] = this.field[rowR + 1, colR + 1] = slotOccuppied;
-                        this.field[rowR + 2, colR - 1] = this.field[rowR + 2, colR] = this.field[rowR + 2, colR + 1] = slotOccuppied;
-
-                        break;
-                    }
                 }
             }
-
-            AddSlotsFullToList();
-
-            // 3 x CARRIER
-            for (int j = 1; j <= 3; j++)
-            {
-                while (true)
-                {
-                    int rowR = rndm.Next(0, 10);
-                    int colR = rndm.Next(0, 10);
-                    int horizontalOrVertical = rndm.Next(0, 2);
-                    int zeroOrOne = rndm.Next(0, 2);
-
-                    if ((rowR == 0 && colR == 0) || (rowR == 0 && colR == 9) || (rowR == 9 && colR == 0) || (rowR == 9 && colR == 9))
-                    {
-                        continue;
-                    } // CORNER ISSUE - TRY AGAIN
-                    else if (rowR == 0 &&
-                        (this.field[rowR, colR - 1] != slotFull && this.field[rowR, colR] != slotFull && this.field[rowR, colR + 1] != slotFull) &&
-                        (this.field[rowR + 1, colR - 1] != slotFull && this.field[rowR + 1, colR] != slotFull && this.field[rowR + 1, colR + 1] != slotFull) &&
-                        (this.field[rowR + 2, colR - 1] != slotFull && this.field[rowR + 2, colR] != slotFull && this.field[rowR + 2, colR + 1] != slotFull))
-                    {
-                        this.field[rowR, colR] = this.field[rowR + 1, colR] = slotFull;
-
-                        this.field[rowR, colR - 1] = this.field[rowR, colR + 1] = this.field[rowR + 1, colR - 1] = this.field[rowR + 1, colR + 1] = this.field[rowR + 2, colR - 1] = this.field[rowR + 2, colR + 1] = this.field[rowR + 2, colR] = slotOccuppied;
-
-                        break;
-                    }
-                    else if (rowR == 9 &&
-                        (this.field[rowR, colR - 1] != slotFull && this.field[rowR, colR] != slotFull && this.field[rowR, colR + 1] != slotFull) &&
-                        (this.field[rowR - 1, colR - 1] != slotFull && this.field[rowR - 1, colR] != slotFull && this.field[rowR - 1, colR + 1] != slotFull) &&
-                        (this.field[rowR - 2, colR - 1] != slotFull && this.field[rowR - 2, colR] != slotFull && this.field[rowR - 2, colR + 1] != slotFull))
-                    {
-                        this.field[rowR, colR] = this.field[rowR - 1, colR] = slotFull;
-
-                        this.field[rowR, colR - 1] = this.field[rowR, colR + 1] = this.field[rowR - 1, colR - 1] = this.field[rowR - 1, colR + 1] = this.field[rowR - 2, colR - 1] = this.field[rowR - 2, colR + 1] = this.field[rowR - 2, colR] = slotOccuppied;
-
-                        break;
-                    }
-                    else if (colR == 0 &&
-                        (this.field[rowR - 1, colR] != slotFull && this.field[rowR - 1, colR + 1] != slotFull && this.field[rowR - 1, colR + 2] != slotFull) &&
-                        (this.field[rowR, colR] != slotFull && this.field[rowR, colR + 1] != slotFull && this.field[rowR, colR + 2] != slotFull) &&
-                        (this.field[rowR + 1, colR] != slotFull && this.field[rowR + 1, colR + 1] != slotFull && this.field[rowR + 1, colR + 2] != slotFull))
-                    {
-                        this.field[rowR, colR] = this.field[rowR, colR + 1] = slotFull;
-
-                        this.field[rowR - 1, colR] = this.field[rowR - 1, colR + 1] = this.field[rowR - 1, colR + 2] = slotOccuppied;
-                        this.field[rowR, colR + 2] = slotOccuppied;
-                        this.field[rowR + 1, colR] = this.field[rowR + 1, colR + 1] = this.field[rowR + 1, colR + 2] = slotOccuppied;
-
-                        break;
-                    }
-                    else if (colR == 9 &&
-                        (this.field[rowR - 1, colR] != slotFull && this.field[rowR - 1, colR - 1] != slotFull && this.field[rowR - 1, colR - 2] != slotFull) &&
-                        (this.field[rowR, colR] != slotFull && this.field[rowR, colR - 1] != slotFull && this.field[rowR, colR - 2] != slotFull) &&
-                        (this.field[rowR + 1, colR] != slotFull && this.field[rowR + 1, colR - 1] != slotFull && this.field[rowR + 1, colR - 2] != slotFull))
-                    {
-                        this.field[rowR, colR] = this.field[rowR, colR - 1] = slotFull;
-
-                        this.field[rowR - 1, colR] = this.field[rowR - 1, colR - 1] = this.field[rowR - 1, colR - 2] = slotOccuppied;
-                        this.field[rowR, colR - 2] = slotOccuppied;
-                        this.field[rowR + 1, colR] = this.field[rowR + 1, colR - 1] = this.field[rowR + 1, colR - 2] = slotOccuppied;
-
-                        break;
-                    }
-                    
-                    else if (horizontalOrVertical == 0 && (colR == 1 || colR == 2 || colR == 3 || colR == 4 || colR == 5 || colR == 6 || colR == 7) && (rowR != 0) && (rowR != 9) &&
-                        (this.field[rowR - 1, colR - 1] != slotFull && this.field[rowR - 1, colR] != slotFull && this.field[rowR - 1, colR + 1] != slotFull && this.field[rowR - 1, colR + 2] != slotFull) &&
-                        (this.field[rowR, colR - 1] != slotFull && this.field[rowR, colR] != slotFull && this.field[rowR, colR + 1] != slotFull && this.field[rowR, colR + 2] != slotFull) &&
-                        (this.field[rowR + 1, colR - 1] != slotFull && this.field[rowR + 1, colR] != slotFull && this.field[rowR + 1, colR + 1] != slotFull && this.field[rowR + 1, colR + 2] != slotFull))
-                    {
-                        this.field[rowR, colR] = this.field[rowR, colR + 1] = slotFull;
-
-                        this.field[rowR - 1, colR - 1] = this.field[rowR - 1, colR] = this.field[rowR - 1, colR + 1] = this.field[rowR - 1, colR + 2] = slotOccuppied;
-                        this.field[rowR, colR - 1] = this.field[rowR, colR + 2] = slotOccuppied;
-                        this.field[rowR + 1, colR - 1] = this.field[rowR + 1, colR] = this.field[rowR + 1, colR + 1] = this.field[rowR + 1, colR + 2] = slotOccuppied;
-
-                        break;
-                    }
-                    else if (horizontalOrVertical == 0 && (colR == 8) && (rowR != 0) && (rowR != 9) &&
-                        (this.field[rowR - 1, colR - 1] != slotFull && this.field[rowR - 1, colR] != slotFull && this.field[rowR - 1, colR + 1] != slotFull) &&
-                        (this.field[rowR, colR - 1] != slotFull && this.field[rowR, colR] != slotFull && this.field[rowR, colR + 1] != slotFull) &&
-                        (this.field[rowR + 1, colR - 1] != slotFull && this.field[rowR + 1, colR] != slotFull && this.field[rowR + 1, colR + 1] != slotFull))
-                    {
-                        this.field[rowR, colR] = this.field[rowR, colR + 1] = slotFull;
-
-                        this.field[rowR - 1, colR - 1] = this.field[rowR - 1, colR] = this.field[rowR - 1, colR + 1] = slotOccuppied;
-                        this.field[rowR, colR - 1] = slotOccuppied;
-                        this.field[rowR + 1, colR - 1] = this.field[rowR + 1, colR] = this.field[rowR + 1, colR + 1] = slotOccuppied;
-
-                        break;
-                    }
-                    
-                    else if (horizontalOrVertical == 1 && (rowR == 1 || rowR == 2 || rowR == 3 || rowR == 4 || rowR == 5 || rowR == 6 || rowR == 7) && (colR != 0) && (colR != 9) &&
-                        (this.field[rowR - 1, colR - 1] != slotFull && this.field[rowR - 1, colR] != slotFull && this.field[rowR - 1, colR + 1] != slotFull) &&
-                        (this.field[rowR, colR - 1] != slotFull && this.field[rowR, colR] != slotFull && this.field[rowR, colR + 1] != slotFull) &&
-                        (this.field[rowR + 1, colR - 1] != slotFull && this.field[rowR + 1, colR] != slotFull && this.field[rowR + 1, colR + 1] != slotFull) &&
-                        (this.field[rowR + 2, colR - 1] != slotFull && this.field[rowR + 2, colR] != slotFull && this.field[rowR + 2, colR + 1] != slotFull))
-                    {
-                        this.field[rowR, colR] = this.field[rowR + 1, colR] = slotFull;
-
-                        this.field[rowR - 1, colR - 1] = this.field[rowR - 1, colR] = this.field[rowR - 1, colR + 1] = slotOccuppied;
-                        this.field[rowR, colR - 1] = this.field[rowR, colR + 1] = slotOccuppied;
-                        this.field[rowR + 1, colR - 1] = this.field[rowR + 1, colR + 1] = slotOccuppied;
-                        this.field[rowR + 2, colR - 1] = this.field[rowR + 2, colR] = this.field[rowR + 2, colR + 1] = slotOccuppied;
-
-                        break;
-                    }
-                    else if (horizontalOrVertical == 1 && (rowR == 8) && (colR != 0) && (colR != 9) &&
-                        (this.field[rowR - 1, colR - 1] != slotFull && this.field[rowR - 1, colR] != slotFull && this.field[rowR - 1, colR + 1] != slotFull) &&
-                        (this.field[rowR, colR - 1] != slotFull && this.field[rowR, colR] != slotFull && this.field[rowR, colR + 1] != slotFull) &&
-                        (this.field[rowR + 1, colR - 1] != slotFull && this.field[rowR + 1, colR] != slotFull && this.field[rowR + 1, colR + 1] != slotFull))
-                    {
-                        this.field[rowR, colR] = this.field[rowR + 1, colR] = slotFull;
-
-                        this.field[rowR - 1, colR - 1] = this.field[rowR - 1, colR] = this.field[rowR - 1, colR + 1] = slotOccuppied;
-                        this.field[rowR, colR - 1] = this.field[rowR, colR + 1] = slotOccuppied;
-                        this.field[rowR + 1, colR - 1] = this.field[rowR + 1, colR + 1] = slotOccuppied;
-
-                        break;
-                    }
-                }
-            }
-
-            AddSlotsFullToList();
-
-            // 4 x BOAT
-            for (int k = 1; k <= 4; k++)
-            {
-                while (true)
-                {
-                    int rowR = rndm.Next(0, 10);
-                    int colR = rndm.Next(0, 10);
-
-                    if (rowR == 0 && colR == 0 && this.field[0, 0] != slotFull && this.field[0, 1] != slotFull && this.field[1, 0] != slotFull && this.field[1, 1] != slotFull)
-                    {
-                        this.field[0, 0] = slotFull;
-                        this.field[0, 1] = this.field[1, 0] = this.field[1, 1] = slotOccuppied;
-                        break;
-                    }
-                    else if (rowR == 0 && colR == 9 && this.field[0, 9] != slotFull && this.field[0, 8] != slotFull && this.field[1, 9] != slotFull && this.field[1, 8] != slotFull)
-                    {
-                        this.field[0, 9] = slotFull;
-                        this.field[0, 8] = this.field[1, 8] = this.field[1, 9] = slotOccuppied;
-                        break;
-                    }                    
-                    else if (rowR == 9 && colR == 0 && this.field[9, 0] != slotFull && this.field[9, 1] != slotFull && this.field[8, 0] != slotFull && this.field[8, 1] != slotFull)
-                    {
-                        this.field[9, 0] = slotFull;
-                        this.field[9, 1] = this.field[8, 0] = this.field[8, 1] = slotOccuppied;
-                        break;
-                    }
-                    else if (rowR == 9 && colR == 9 && this.field[9, 9] != slotFull && this.field[9, 8] != slotFull && this.field[8, 9] != slotFull && this.field[8, 8] != slotFull)
-                    {
-                        this.field[9, 9] = slotFull;
-                        this.field[8, 8] = this.field[8, 9] = this.field[9, 8] = slotOccuppied;
-                        break;
-                    }
-                    else if (rowR == 0 && colR != 0 && colR != 9 &&
-                        (this.field[rowR, colR - 1] != slotFull && this.field[rowR, colR] != slotFull && this.field[rowR, colR + 1] != slotFull && this.field[rowR + 1, colR - 1] != slotFull && this.field[rowR + 1, colR] != slotFull & this.field[rowR + 1, colR + 1] != slotFull))
-                    {
-                        this.field[rowR, colR] = slotFull;
-                        this.field[rowR, colR - 1] = this.field[rowR, colR + 1] = this.field[rowR + 1, colR - 1] = this.field[rowR + 1, colR] = this.field[rowR + 1, colR + 1] = slotOccuppied;
-                        break;
-                    }
-                    else if (rowR == 9 && colR != 0 && colR != 9 &&
-                        (this.field[rowR, colR - 1] != slotFull && this.field[rowR, colR] != slotFull && this.field[rowR, colR + 1] != slotFull && this.field[rowR - 1, colR - 1] != slotFull && this.field[rowR - 1, colR] != slotFull & this.field[rowR - 1, colR + 1] != slotFull))
-                    {
-                        this.field[rowR, colR] = slotFull;
-                        this.field[rowR, colR - 1] = this.field[rowR, colR + 1] = this.field[rowR - 1, colR - 1] = this.field[rowR - 1, colR] = this.field[rowR - 1, colR + 1] = slotOccuppied;
-                        break;
-                    }
-                    else if (colR == 0 && rowR != 0 && rowR != 9 &&
-                        (this.field[rowR - 1, colR] != slotFull && this.field[rowR - 1, colR + 1] != slotFull && this.field[rowR, colR] != slotFull && this.field[rowR, colR + 1] != slotFull && this.field[rowR + 1, colR] != slotFull & this.field[rowR + 1, colR + 1] != slotFull))
-                    {
-                        this.field[rowR, colR] = slotFull;
-                        this.field[rowR - 1, colR] = this.field[rowR - 1, colR + 1] = this.field[rowR, colR + 1] = this.field[rowR + 1, colR] = this.field[rowR + 1, colR + 1] = slotOccuppied;
-                        break;
-                    }
-                    else if (colR == 9 && rowR != 0 && rowR != 9 &&
-                        (this.field[rowR - 1, colR - 1] != slotFull && this.field[rowR - 1, colR] != slotFull && this.field[rowR, colR - 1] != slotFull && this.field[rowR, colR] != slotFull && this.field[rowR + 1, colR - 1] != slotFull & (this.field[rowR + 1, colR] != slotFull)))
-                    {
-                        this.field[rowR, colR] = slotFull;
-                        this.field[rowR - 1, colR] = this.field[rowR - 1, colR - 1] = this.field[rowR, colR - 1] = this.field[rowR + 1, colR - 1] = this.field[rowR + 1, colR] = slotOccuppied;
-                        break;
-                    }
-                    else if (colR != 0 && colR != 9 && rowR != 0 && rowR != 9 &&
-                        (this.field[rowR - 1, colR - 1] != slotFull && this.field[rowR - 1, colR] != slotFull && this.field[rowR - 1, colR + 1] != slotFull) &&
-                        (this.field[rowR, colR - 1] != slotFull && this.field[rowR, colR] != slotFull && this.field[rowR, colR + 1] != slotFull) &&
-                        (this.field[rowR + 1, colR - 1] != slotFull && this.field[rowR + 1, colR] != slotFull && this.field[rowR + 1, colR + 1] != slotFull))
-                    {
-                        this.field[rowR, colR] = slotFull;
-                        this.field[rowR - 1, colR - 1] = this.field[rowR - 1, colR] = this.field[rowR - 1, colR + 1] = slotOccuppied;
-                        this.field[rowR, colR - 1] = this.field[rowR, colR + 1] = slotOccuppied;
-                        this.field[rowR + 1, colR - 1] = this.field[rowR + 1, colR] = this.field[rowR + 1, colR + 1] = slotOccuppied;
-                        break;
-                    }                   
-                }
-            }
-
-            SetLettersToFullSlots();
         }
 
 
@@ -708,7 +521,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
 
                 for (int col = 0; col < this.field.GetLength(1); col++)
                 {
-                    mySB.Append(slotEmpty);
+                    mySB.Append(BattlefieldElements.slotEmpty);
                 }
                 mySB.Append("║");
                 mySB.AppendLine();
@@ -716,6 +529,154 @@ namespace PT_Console_App_ShipsAndBoatsGame
 
             mySB.AppendLine($"   ╚═══╩═════════════════════╝");
             return mySB.ToString().TrimEnd();
+        }
+
+
+        public static bool CheckIfSlotIsInCorner(int row, int col)
+        {
+            if ((row == 0 && col == 0) || (row == 0 && col == 9) || (row == 9 && col == 0) || (row == 9 && col == 9))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public static bool CheckIfSlotIsOnEdge(int row, int col)
+        {
+            if (((row == 0 || row == 9) && (col > 0 && col < 9)) || (col == 0 || col == 9) && (row > 0 && row < 9))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public static bool CheckIfSlotIsInTheMiddle(int row, int col)
+        {
+            if ((row > 0 && row < 9) && (col > 0 && col < 9))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public static bool CheckIfSlotIsInsideOfMatrix(int row, int col)
+        {
+            if (row >= 0 && row <= 9 && col >= 0 && col <= 9)
+            {
+                return true;
+            }
+            return false;
+        }
+
+
+        public void SetBotOpponentSlotsIfAnotherCarrierAround(int row, int col)
+        {
+            // CHECK FOR ANOTHER CARRIER SLOT ON TOP
+            if ((row - 1 >= 1) && this.field[row - 1, col] == BattlefieldElements.slotCarrier)
+            {
+                this.field[row - 2, col] = this.field[row + 1, col] = BattlefieldElements.slotOccuppied;
+            }
+            // CHECK FOR ANOTHER CARRIER SLOT ON BOTTOM
+            else if ((row + 1 <= 8) && this.field[row + 1, col] == BattlefieldElements.slotCarrier)
+            {
+                this.field[row + 2, col] = this.field[row - 1, col] = BattlefieldElements.slotOccuppied;
+            }
+            // CHECK FOR ANOTHER CARRIER SLOT ON LEFT
+            else if ((col - 1 >= 1) && this.field[row, col - 1] == BattlefieldElements.slotCarrier)
+            {
+                this.field[row, col - 2] = this.field[row, col + 1] = BattlefieldElements.slotOccuppied;
+            }
+            // CHECK FOR ANOTHER CARRIER SLOT ON RIGHT
+            else if ((col + 1 <= 8) && this.field[row, col + 1] == BattlefieldElements.slotCarrier)
+            {
+                this.field[row, col + 2] = this.field[row, col - 1] = BattlefieldElements.slotOccuppied;
+            }
+        }
+
+        public void SetBotOpponentSlotsAllAroundToDot(int row, int col)
+        {
+            for (int i = row - 1; i <= row + 1; i++)
+            {
+                for (int j = col - 1; j <= col + 1; j++)
+                {
+                    if ((i >= 0 && i <= 9) && (j >= 0 && j <= 9))
+                    {
+                        this.field[i, j] = BattlefieldElements.slotOccuppied;
+                    }
+                }
+            }
+        }
+
+        public void SetBotOpponentSlotsDiagonalToDot(int row, int col)
+        {
+            for (int i = row - 1; i <= row + 1; i += 2)
+            {
+                for (int j = col - 1; j <= col + 1; j += 2)
+                {
+                    if ((i >= 0 && i <= 9) && (j >= 0 && j <= 9) && (i != row && j != col))
+                    {
+                        this.field[i, j] = BattlefieldElements.slotOccuppied;
+                    }
+                }
+            }
+        }
+
+        public void SetBotOpponentSlotsVesselOnEdgeToDot(int row, int col, string result)
+        {
+            int lengthVessel = BattlefieldElements.GetVesselLength(result);
+
+            if (row == 0)
+            {
+                for (int rowCurr = 0; rowCurr <= lengthVessel; rowCurr++)
+                {
+                    this.field[rowCurr, col - 1] = this.field[rowCurr, col + 1] = BattlefieldElements.slotOccuppied;
+                    this.field[rowCurr, col] = result;
+
+                    if (rowCurr == lengthVessel)
+                    {
+                        this.field[rowCurr, col] = BattlefieldElements.slotOccuppied;
+                    }
+                }
+            } // UPPER EDGE
+            else if (row == 9)
+            {
+                for (int rowCurr = 9; rowCurr >= 9 - lengthVessel; rowCurr--)
+                {
+                    this.field[rowCurr, col - 1] = this.field[rowCurr, col + 1] = BattlefieldElements.slotOccuppied;
+                    this.field[rowCurr, col] = result;
+
+                    if (rowCurr == 9 - lengthVessel)
+                    {
+                        this.field[rowCurr, col] = BattlefieldElements.slotOccuppied;
+                    }
+                }
+            } // LOWER EDGE
+            else if (col == 0)
+            {
+                for (int colCurr = 0; colCurr <= lengthVessel; colCurr++)
+                {
+                    this.field[row - 1, colCurr] = this.field[row + 1, colCurr] = BattlefieldElements.slotOccuppied;
+                    this.field[row, colCurr] = result;
+
+                    if (colCurr == lengthVessel)
+                    {
+                        this.field[row, colCurr] = BattlefieldElements.slotOccuppied;
+                    }
+                }
+            } // LEFT EDGE
+            else if (col == 9)
+            {
+                for (int colCurr = 9; colCurr >= 9 - lengthVessel; colCurr--)
+                {
+                    this.field[row - 1, colCurr] = this.field[row + 1, colCurr] = BattlefieldElements.slotOccuppied;
+                    this.field[row, colCurr] = result;
+
+                    if (colCurr == 9 - lengthVessel)
+                    {
+                        this.field[row, colCurr] = BattlefieldElements.slotOccuppied;
+                    }
+                }
+            } // RIGHT EDGE
         }
     }
 }
