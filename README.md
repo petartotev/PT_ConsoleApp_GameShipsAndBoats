@@ -54,4 +54,14 @@ The one to destroy all enemy's vessels wins.
 
 ## Contents
 
-~THE END~
+The solution contains 2 directories:
+
+- Game
+  - GameShipsAndBoats.Game (.NET Core Console Application)
+  - GameShipsAndBoats.Game.Tests (NUnit test project)
+- Resources
+  - Screenshots
+    - PT_ConsoleApp_GameShipsAndBoats.jpg
+  - .ico
+
+\~THE END\~
