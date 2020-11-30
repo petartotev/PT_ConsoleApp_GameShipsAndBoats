@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.30002.166
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Game", "Game", "{61D4C3EF-6CAE-41FB-8A1D-8A37D7E6FCD1}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resources", "Resources", "{7A6E3196-65E5-4B5F-A1B3-A87B4CD71B6C}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameShipsAndBoats.Game", "Game\GameShipsAndBoats.Game\GameShipsAndBoats.Game.csproj", "{BEAE8E7A-6253-4014-B57B-F9416268BE5E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameShipsAndBoats.Game.Tests", "Game\GameShipsAndBoats.Game.Tests\GameShipsAndBoats.Game.Tests.csproj", "{5585AF5D-DDB1-4B81-B26D-D6FC83A2BF00}"
