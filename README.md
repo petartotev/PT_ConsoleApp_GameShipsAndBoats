@@ -1,50 +1,57 @@
-# PT_Console_App_ShipsAndBoatsGame
+# PT_ConsoleApp_GameShipsAndBoats
 
-### ~ Just don't give a ship! ~
+## General Information
 
-**Introduction:**
+PT_ConsoleApp_GameShipsAndBoats is a familiar paper-and-pencil game I used to play with my father once I was a child.  
+What we needed were 2 pens, 2 sheets of paper and our backs agains each other!
 
-PT_Console_App_ShipsAndBoatsGame is based on a game I played with my Dad once I was a kid.
-The things we needed to enjoy it - 2 pens, 2 sheets of paper and our backs agains each other!
+![GitHub Logo](Resources/Screenshots/PT_ConsoleApp_GameShipsAndBoats.jpg)
 
-![GitHub Logo](PT_Console_App_ShipsAndBoatsGame.jpg)
+20 years later, I decided to implement the game as a console application.  
+The most interesting challenge was the "AI" algorithm that I needed to write for the role of the Opponent (PC).  
+Once it hits anything - what slot should it attack and what slots should it consider pointless...
 
-**Rules:**
+## Technologies
 
-The game is played by 2 people - YOU and the PC (Opponent).
+- NUnit
+- System.Data.SqlClient
 
-Both of the sides have a battlefield which is a square matrix (10 x 10).
+## Rules\*
 
-Both of you have a fleet that consists of 1 Tanker (TTTT), 2 Submarines (SSS), 3 Carriers (CC) and 4 Boats (B).
+There are 2 players - YOU and the Opponent (PC).
 
-The Game Engine randomly generates the 10 vessels described above onto YOUr's and also onto PC's battlefield.
+Both of the sides have a battlefield which is a square matrix (10 x 10 slots).
 
-The Engine places the 10 vessels of yours and the 10 that belong to the Opponent based on the following rules:
+Both of you have a fleet that consists of:
 
-- A Boat (B) could be placed anywhere on the Battlefield - in the corners, on the edges and in the middle of the matrix.
-- A Carrier (CC), a Submarine (SSS) or a Tanker (TTTT) could either be placed in the middle of the Battlefield or they could only touch 1 edge of the matrix with only 1 of their segments.
-- 2 vessels could not touch - either by their sides or diagonally.
-- In other words - all the slots that surround a vessel (the ones on the left, on the right, on the top and on the bottom and the 4 "diagonal" slots should be left empty (no vessels there!)).
-- It is always the Opponent who starts the game by playing first.
-- You shoot at your Opponent's battlefield by giving 2 coordinates - first one for column (A-J), then for row (0-9) (for example B6 or j9). 
-- If you hit a vessel is would be your turn again until you miss and hit a blank slot.
-- If you hit a vessel you would see onto the Opponent's battlefield T/S/C/B.
-- If you hit at a vessel twice it would change from T/S/C/B to X.
-- The winner is the one that is the first to destroy all of their enemy's vessels.
+- 1 Tanker (TTTT)
+- 2 Submarines (SSS)
+- 3 Carriers (CC)
+- 4 Boats (B)
 
-**Files:**
+The Game Engine randomly generates the 10 vessels described above on your battlefield as well as on the Opponent's.
 
-PT_Console_App_ShipsAndBoatsGame - The Project
+The Engine places them according to the following rules:
 
-PT_Console_App_ShipsAndBoatsGame.Tests - The Unit Tests
+- A Boat (B) could be placed anywhere - in the corners, on the edges and in the middle of the battlefield
+- A Carrier (CC), a Submarine (SSS) or a Tanker (TTTT) could be placed in the middle of the battlefield or they could only touch an edge of the matrix with only 1 of their segments
+- 2 vessels cannot touch - either by a sides or diagonally
+- All slots surrounding a vessel (left, right, top, bottom and the 4 "diagonal" slots should be left empty
 
-PT_Console_App_ShipsAndBoatsGame.ico - Logo/Ico ((S)hips and (B)oats)
+The Gameplay follows these simple rules:
 
-PT_Console_App_ShipsAndBoatsGame.jpg - Screenshots of the Game
+- The Opponent starts the game by playing first.
+- You shoot at your Opponent's battlefield by giving 2 coordinates - first one for column (A-J), then for row (0-9).  
+  For example: B6, j0, a1 etc. (case insensitive)
 
-PT_Console_App_ShipsAndBoatsGame.sln - The Solution
+- Once you hit a vessel it is your turn again - until you hit a blank slot
+- If you hit a vessel the slot on the Opponent's battlefield will turn to 'T'/'S'/'C'/'B'
+- If you hit at a vessel twice it would change from 'T'/'S'/'C'/'B' to 'X'
 
-PT_Console_App_ShipsAndBoatsGame20200630.rar - The Publish (all the .dll-s, .exe and .ico) archived - all you need to start UI playing )))
+The one to destroy all enemy's vessels wins.
 
+\* If you are about to play the game - please go to Instructions from the menu and watch the animated examples.
 
-~ I would be more than happy if you try it, check the code, leave a comment! ~
+## Contents
+
+~THE END~
