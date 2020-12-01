@@ -24,7 +24,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
 
         public static int GetVesselLength(string vessel)
         {
-            int lengthVessel = 0;
+            int lengthVessel;
 
             switch (vessel)
             {

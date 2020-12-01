@@ -38,7 +38,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
             {
                 throw new ArgumentOutOfRangeException($"The coordinates of the battlefield are out of range!");
             }
-            else if (vessel == null)
+            if (vessel == null)
             {
                 throw new ArgumentNullException($"The coordinates of the battlefield are out of range!");
             }

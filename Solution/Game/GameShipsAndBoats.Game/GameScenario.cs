@@ -5,42 +5,7 @@ using System.Threading;
 namespace PT_Console_App_ShipsAndBoatsGame
 {
     public class GameScenario
-    {
-        private static void PrintGameplayUI(Player player, Player opponent, int stage)
-        {
-            Console.Clear();
-
-            Console.WriteLine(GameElements.GetTitle());
-            Console.WriteLine(GameElements.GetLineSolid());
-
-            Console.WriteLine($"   Opponent:");
-            Console.WriteLine(player.OpponentBattlefield.Print());
-
-            Console.WriteLine($"   You:");
-            Console.WriteLine(player.PlayerBattlefield.Print());
-
-            //Console.WriteLine($"   What Opponent sees:");
-            //Console.WriteLine(opponent.OpponentBattlefield.Print());
-
-            Console.WriteLine(GameElements.GetLegend());
-            Console.WriteLine(GameElements.GetLineSolid());
-            Console.WriteLine(GameElements.GetCredits());
-
-            Console.WriteLine($"\n Stage {stage}");
-        }
-                
-        public static void PlayIntro()
-        {
-            Thread.Sleep(1000);
-            Console.WriteLine(GameElements.GetTitle());
-            Console.WriteLine(GameElements.GetLineSolid());
-
-            Thread.Sleep(1000);
-            Console.WriteLine(GameElements.GetMenu());
-
-            Thread.Sleep(1000);
-        }
-        
+    {                        
         public static string GetMenuCommand()
         {
             bool isTrue = true;
@@ -300,7 +265,19 @@ namespace PT_Console_App_ShipsAndBoatsGame
             Console.ReadKey();
 
             Console.Clear();
-        }            
+        }
+
+        public static void PlayIntro()
+        {
+            Thread.Sleep(1000);
+            Console.WriteLine(GameElements.GetTitle());
+            Console.WriteLine(GameElements.GetLineSolid());
+
+            Thread.Sleep(1000);
+            Console.WriteLine(GameElements.GetMenu());
+
+            Thread.Sleep(1000);
+        }
 
         public static void PlayGame()
         {
@@ -477,7 +454,6 @@ namespace PT_Console_App_ShipsAndBoatsGame
             var connection = new SqlConnection("Server=PT\\SQLEXPRESS;Database=ShipsAndBoatsGame;Integrated Security=True;");
 
             connection.Open();
-
             using (connection)
             {
                 var commandGetWon = new SqlCommand("SELECT [Won] FROM Statisticsss", connection);
@@ -501,6 +477,23 @@ namespace PT_Console_App_ShipsAndBoatsGame
                     commandUpdateLost.ExecuteScalar();
                 }
             }
+        }
+
+        private static void PrintGameplayUI(Player player, Player opponent, int stage)
+        {
+            Console.Clear();
+            Console.WriteLine(GameElements.GetTitle());
+            Console.WriteLine(GameElements.GetLineSolid());
+            Console.WriteLine($"   Opponent:");
+            Console.WriteLine(player.OpponentBattlefield.Print());
+            Console.WriteLine($"   You:");
+            Console.WriteLine(player.PlayerBattlefield.Print());
+            //Console.WriteLine($"   What Opponent sees:");
+            //Console.WriteLine(opponent.OpponentBattlefield.Print());
+            Console.WriteLine(GameElements.GetLegend());
+            Console.WriteLine(GameElements.GetLineSolid());
+            Console.WriteLine(GameElements.GetCredits());
+            Console.WriteLine($"\n Stage {stage}");
         }
     }
 }

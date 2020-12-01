@@ -9,7 +9,6 @@ namespace PT_Console_App_ShipsAndBoatsGame
         {
             StringBuilder title = new StringBuilder();
             title.AppendLine($"   SHIPS AND BOATS BATTLEFIELD");
-
             return title.ToString().TrimEnd();
         }
 
@@ -17,16 +16,13 @@ namespace PT_Console_App_ShipsAndBoatsGame
         {
             StringBuilder lineEmpty = new StringBuilder();
             lineEmpty.AppendLine();
-
             return lineEmpty.ToString();
         }        
 
         public static string GetLineSolid()
         {
             StringBuilder lineSolid = new StringBuilder();
-
             lineSolid.AppendLine(" " + new string('─', 31));
-
             return lineSolid.ToString().TrimEnd();
         }
 
@@ -34,7 +30,6 @@ namespace PT_Console_App_ShipsAndBoatsGame
         {
             StringBuilder credits = new StringBuilder();
             credits.AppendLine($"        www.petartotev.net");
-
             return credits.ToString().TrimEnd();
         }
 
@@ -48,7 +43,6 @@ namespace PT_Console_App_ShipsAndBoatsGame
             legend.AppendLine($"   │ 3 x C C   (Carrier ship)│");
             legend.AppendLine($"   │ 4 x B             (Boat)│");
             legend.AppendLine($"   └─────────────────────────┘");
-
             return legend.ToString().TrimEnd();
         }
 
@@ -62,7 +56,6 @@ namespace PT_Console_App_ShipsAndBoatsGame
             menu.AppendLine($"   │  S/s  │ Statistics      │");
             menu.AppendLine($"   │  Esc  │ Exit            │");
             menu.AppendLine($"   └───────┴─────────────────┘");
-
             return menu.ToString().TrimEnd();
         }
 
@@ -78,15 +71,11 @@ namespace PT_Console_App_ShipsAndBoatsGame
             using (connection)
             {
                 var commandGetWonResult = new SqlCommand("SELECT Won FROM Statisticsss WHERE ID=1", connection);
-
                 var resultWon = commandGetWonResult.ExecuteScalar();
-
                 gamesWon = (int)resultWon;
 
                 var commandGetLostResult = new SqlCommand("SELECT Lost FROM Statisticsss WHERE ID=1", connection);
-
                 var resultLost = commandGetLostResult.ExecuteScalar();
-
                 gamesLost = (int)resultLost;
 
             }
@@ -108,7 +97,6 @@ namespace PT_Console_App_ShipsAndBoatsGame
         {
             StringBuilder invalidMessage = new StringBuilder();
             invalidMessage.AppendLine($" Invalid!");
-
             return invalidMessage.ToString().TrimEnd();
         }
 
@@ -116,7 +104,6 @@ namespace PT_Console_App_ShipsAndBoatsGame
         {
             StringBuilder invalidMessage = new StringBuilder();
             invalidMessage.AppendLine($"\n   Press any key to continue...");
-
             return invalidMessage.ToString().TrimEnd();
         }
     }
