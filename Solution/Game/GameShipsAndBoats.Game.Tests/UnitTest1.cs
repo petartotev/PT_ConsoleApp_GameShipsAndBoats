@@ -1,5 +1,5 @@
+using GameShipsAndBoats.Game.Models;
 using NUnit.Framework;
-using PT_Console_App_ShipsAndBoatsGame;
 using System;
 
 namespace GameShipsAndBoats.Game.Tests
