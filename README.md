@@ -2,7 +2,7 @@
 
 ## General Information
 
-PT_ConsoleApp_GameShipsAndBoats is a familiar paper-and-pencil game I used to play with my father once I was a child.  
+PT_ConsoleApp_GameShipsAndBoats is a familiar paper-and-pencil game I used to play with my father when I was a child.  
 What we needed were 2 pens, 2 sheets of paper and our backs agains each other!
 
 ![GitHub Logo](Resources/Screenshots/PT_ConsoleApp_GameShipsAndBoats.jpg)
