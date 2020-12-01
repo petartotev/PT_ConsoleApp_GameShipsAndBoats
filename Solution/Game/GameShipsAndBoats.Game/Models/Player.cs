@@ -1,7 +1,10 @@
-﻿using System;
+﻿using GameShipsAndBoats.Game.Core;
+using GameShipsAndBoats.Game.Models.Common;
+using GameShipsAndBoats.Game.Models.Contracts;
+using System;
 using System.Text;
 
-namespace PT_Console_App_ShipsAndBoatsGame
+namespace GameShipsAndBoats.Game.Models
 {
     public class Player : IPlayer
     {
@@ -10,9 +13,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
 
         public Player()
         {
-            this.playerBattlefield = new Battlefield();
-            this.playerBattlefield.SetNewRandomBattlefield();
-
+            this.playerBattlefield = BattlefieldGenerator.GenerateNewBattlefield();
             this.opponentBattlefield = new Battlefield();
         }
 
@@ -32,9 +33,15 @@ namespace PT_Console_App_ShipsAndBoatsGame
             }
         }
 
+
+        public void Attack(int row, int col, string vessel)
+        {
+            this.opponentBattlefield.SetSlot(row, col, vessel);
+        }
+
         public void BotAttack(int row, int col, string vessel)
         {
-            if (!Battlefield.CheckIfSlotIsInsideOfMatrix(row, col))
+            if (!BattlefieldValidator.CheckIfSlotIsInsideOfMatrix(row, col))
             {
                 throw new ArgumentOutOfRangeException($"The coordinates of the battlefield are out of range!");
             }
@@ -49,7 +56,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
             } // BOAT
             else if (BattlefieldElements.slotsVessels.Contains(vessel))
             {
-                if (Battlefield.CheckIfSlotIsInTheMiddle(row, col))
+                if (BattlefieldValidator.CheckIfSlotIsInTheMiddle(row, col))
                 {
                     this.opponentBattlefield.SetBotOpponentSlotsDiagonalToDot(row, col);
 
@@ -58,7 +65,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
                         this.opponentBattlefield.SetBotOpponentSlotsIfAnotherCarrierAround(row, col);
                     }
                 } // OTHER VESSEL IN THE MIDDLE
-                else if (Battlefield.CheckIfSlotIsOnEdge(row, col))
+                else if (BattlefieldValidator.CheckIfSlotIsOnEdge(row, col))
                 {
                     this.opponentBattlefield.SetBotOpponentSlotsVesselOnEdgeToDot(row, col, vessel);
                 } // OTHER VESSEL ON EDGE
@@ -67,9 +74,43 @@ namespace PT_Console_App_ShipsAndBoatsGame
             this.opponentBattlefield.SetSlot(row, col, vessel);
         }
 
-        public void Attack(int row, int col, string vessel)
+        public bool CheckIfWinner()
         {
-            this.opponentBattlefield.SetSlot(row, col, vessel);
+            int hitTargets = 0;
+
+            for (int row = 0; row < 10; row++)
+            {
+                for (int col = 0; col < 10; col++)
+                {
+                    if (BattlefieldElements.slotsVessels.Contains(this.opponentBattlefield.GetSlot(row, col)))
+                    {
+                        hitTargets++;
+                    }
+                }
+            }
+
+            // 20 SLOTS = TTTT + SSS + SSS + CC + CC + CC + B + B + B + B
+            if (hitTargets == 20)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public string GetAttacked(int row, int col)
+        {
+            string slotResult = playerBattlefield.GetSlot(row, col);
+
+            if (BattlefieldElements.slotsVessels.Contains(slotResult))
+            {
+                playerBattlefield.SetSlot(row, col, BattlefieldElements.slotHit);
+                return slotResult;
+            }
+            else
+            {
+                playerBattlefield.SetSlot(row, col, BattlefieldElements.slotOpponentPlus);
+                return BattlefieldElements.slotOpponentMinus;
+            }
         }
 
         public string GetAttackMessage(string vessel)
@@ -99,46 +140,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
             return attackMessage.ToString().TrimEnd();
         }
 
-        public string GetAttacked(int row, int col)
-        {
-            string slotResult = playerBattlefield.GetSlot(row, col);
-
-            if (BattlefieldElements.slotsVessels.Contains(slotResult))
-            {
-                playerBattlefield.SetSlot(row, col, BattlefieldElements.slotHit);
-                return slotResult;
-            }
-            else
-            {
-                playerBattlefield.SetSlot(row, col, BattlefieldElements.slotOpponentPlus);
-                return BattlefieldElements.slotOpponentMinus;
-            }
-        }
-
-        public bool CheckIfWinner()
-        {
-            int hitTargets = 0;
-
-            // TOTAL VESSELS = 10
-            for (int row = 0; row < 10; row++)
-            {
-                for (int col = 0; col < 10; col++)
-                {
-                    if (BattlefieldElements.slotsVessels.Contains(this.opponentBattlefield.GetSlot(row, col)))
-                    {
-                        hitTargets++;
-                    }
-                }
-            }
-
-            if (hitTargets == 20)
-            {
-                return true;
-            }
-            return false;
-        }
-
-        public void MarkDownThatYourWholeShipOnEdgeIsDestroyed(int row, int col, string vessel)
+        public void MarkShipOnEdgeAsDestroyed(int row, int col, string vessel)
         {
             int lengthVessel = BattlefieldElements.GetVesselLength(vessel);
 
@@ -176,7 +178,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
                         this.playerBattlefield.SetSlot(row, i, BattlefieldElements.slotHit);
                     }
                 }
-            }            
+            }
         }
     }
 }

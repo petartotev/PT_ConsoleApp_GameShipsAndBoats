@@ -1,7 +1,7 @@
 ﻿using System.Data.SqlClient;
 using System.Text;
 
-namespace PT_Console_App_ShipsAndBoatsGame
+namespace GameShipsAndBoats.Game.Models.Common
 {
     public static class GameElements
     {
@@ -17,7 +17,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
             StringBuilder lineEmpty = new StringBuilder();
             lineEmpty.AppendLine();
             return lineEmpty.ToString();
-        }        
+        }
 
         public static string GetLineSolid()
         {

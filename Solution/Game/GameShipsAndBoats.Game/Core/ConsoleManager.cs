@@ -1,9 +1,9 @@
 ﻿using System;
 
-namespace PT_Console_App_ShipsAndBoatsGame
+namespace GameShipsAndBoats.Game.Core
 {
-    public static class GameConsole
-    {        
+    public static class ConsoleManager
+    {
         public static void SetConsoleProperties()
         {
             Console.Title = "Ships&BoatsGame";
@@ -13,7 +13,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
             Console.SetWindowPosition(0, 0);
             Console.SetBufferSize(33, 50);
 
-            Console.CursorVisible = false;            
+            Console.CursorVisible = false;
         }
     }
 }

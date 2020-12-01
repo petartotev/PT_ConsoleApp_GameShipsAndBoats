@@ -1,27 +1,28 @@
-﻿using System;
+﻿using GameShipsAndBoats.Game.Core;
+using System;
 
-namespace PT_Console_App_ShipsAndBoatsGame
+namespace GameShipsAndBoats.Game
 {
-    public class Program
+    public class Startup
     {
         static void Main(string[] args)
-        {            
-            GameConsole.SetConsoleProperties();
+        {
+            ConsoleManager.SetConsoleProperties();
 
             while (true)
             {
-                GameScenario.PlayIntro();
+                GameEngine.PlayIntro();
 
-                switch (GameScenario.GetMenuCommand())
+                switch (GameEngine.GetMenuCommand())
                 {
                     case "PLAY":
-                        GameScenario.PlayGame();
+                        GameEngine.PlayGame();
                         break;
                     case "INSTRUCTIONS":
-                        GameScenario.ShowInstructions();                        
+                        GameEngine.ShowInstructions();
                         break;
                     case "STATISTICS":
-                        GameScenario.ShowStatistics();
+                        GameEngine.ShowStatistics();
                         break;
                     case "EXIT":
                         Environment.Exit(0);

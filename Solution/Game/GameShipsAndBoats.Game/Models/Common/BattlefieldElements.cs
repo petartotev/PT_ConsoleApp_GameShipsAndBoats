@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace PT_Console_App_ShipsAndBoatsGame
+namespace GameShipsAndBoats.Game.Models.Common
 {
     public static class BattlefieldElements
     {

@@ -1,11 +1,13 @@
-﻿using System;
+﻿using GameShipsAndBoats.Game.Models;
+using GameShipsAndBoats.Game.Models.Common;
+using System;
 using System.Data.SqlClient;
 using System.Threading;
 
-namespace PT_Console_App_ShipsAndBoatsGame
+namespace GameShipsAndBoats.Game.Core
 {
-    public class GameScenario
-    {                        
+    public static class GameEngine
+    {
         public static string GetMenuCommand()
         {
             bool isTrue = true;
@@ -40,14 +42,13 @@ namespace PT_Console_App_ShipsAndBoatsGame
             Console.WriteLine(GameElements.GetTitle());
             Console.WriteLine(GameElements.GetLineSolid());
 
-            Battlefield instructionsBattlefield = new Battlefield();
-            instructionsBattlefield.SetNewRandomBattlefield();
+            Battlefield instructionsBattlefield = BattlefieldGenerator.GenerateNewBattlefield();
 
             Thread.Sleep(1000);
             Console.WriteLine($"   Instructions:");
 
             Thread.Sleep(1000);
-            Console.WriteLine(instructionsBattlefield.PrintEmpty());
+            Console.WriteLine(instructionsBattlefield.ToString());
 
             Thread.Sleep(1000);
             Console.WriteLine(GameElements.GetLegend());
@@ -103,16 +104,16 @@ namespace PT_Console_App_ShipsAndBoatsGame
                         Console.ForegroundColor = ConsoleColor.Green;
                         Console.Write("B ");
                     }
-                    else if ((row == 9 && col == 5) || (row == 9 && col == 6) || ( row == 9 && col == 7)) // DRAW INCORRECT SUBMARINE (SSS)
+                    else if ((row == 9 && col == 5) || (row == 9 && col == 6) || (row == 9 && col == 7)) // DRAW INCORRECT SUBMARINE (SSS)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.Write("S ");
-                    }                    
+                    }
                     else if ((row == 8 && col == 0) || (row == 9 && col == 0)) // DRAW INCORRECT CARRIER (CC)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.Write("C ");
-                        
+
                     }
                     else // DRAW EMPTY SLOT
                     {
@@ -149,7 +150,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
 
             Console.WriteLine($"   Instructions:");
 
-            Console.WriteLine(instructionsBattlefield.PrintEmpty());
+            Console.WriteLine(instructionsBattlefield.ToString());
 
             Console.WriteLine(GameElements.GetLegend());
 
@@ -185,7 +186,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
                     if ((row == 2 && col == 3) || (row == 2 && col == 4) || (row == 2 && col == 5) || (row == 2 && col == 6)) // DRAW INCORRECT TANKER (TTTT)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Write("K ");                        
+                        Console.Write("K ");
                     }
                     else if ((row == 4 && col == 1) || (row == 4 && col == 2) || (row == 4 && col == 3)) // DRAW CORRECT SUBMARINE (SSS)
                     {
@@ -204,7 +205,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
                     }
                     else if ((row == 9 && col == 2)) // DRAW INCORRECT BOAT (B)
                     {
-                        Console.ForegroundColor = ConsoleColor.Red; 
+                        Console.ForegroundColor = ConsoleColor.Red;
                         Console.Write("B ");
                     }
                     else if ((row == 8 && col == 3) || (row == 9 && col == 3)) // DRAW INCORRECT CARRIER (CC)
@@ -231,7 +232,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
 
             Thread.Sleep(1000);
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"\n   CORRECT.\n");            
+            Console.WriteLine($"\n   CORRECT.\n");
 
             Thread.Sleep(1000);
             Console.ForegroundColor = ConsoleColor.Red;
@@ -287,10 +288,10 @@ namespace PT_Console_App_ShipsAndBoatsGame
             Player opponent = new Player();
 
             while (true)
-            {     
+            {
                 while (true)
                 {
-                    PrintGameplayUI(player, opponent, stage);                                        
+                    PrintGameplayUI(player, opponent, stage);
 
                     Random myRandom = new Random();
 
@@ -302,11 +303,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
                         rowRandom = myRandom.Next(0, 10);
                         colRandom = myRandom.Next(0, 10);
 
-                        if (opponent.OpponentBattlefield.Field[rowRandom, colRandom] != BattlefieldElements.slotHidden)
-                        {
-                            continue;
-                        }                        
-                        else
+                        if (opponent.OpponentBattlefield.Field[rowRandom, colRandom] == BattlefieldElements.slotHidden)
                         {
                             break;
                         }
@@ -317,7 +314,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
                     opponent.BotAttack(rowRandom, colRandom, playerAttackedSlotResult);
 
                     Console.WriteLine($" Opponent" + opponent.GetAttackMessage(playerAttackedSlotResult));
-                    Thread.Sleep(1500);
+                    Thread.Sleep(1000);
 
                     if (opponent.CheckIfWinner())
                     {
@@ -326,9 +323,9 @@ namespace PT_Console_App_ShipsAndBoatsGame
 
                     if (BattlefieldElements.slotsVessels.Contains(playerAttackedSlotResult))
                     {
-                        if (Battlefield.CheckIfSlotIsOnEdge(rowRandom,colRandom))
+                        if (BattlefieldValidator.CheckIfSlotIsOnEdge(rowRandom, colRandom))
                         {
-                            player.MarkDownThatYourWholeShipOnEdgeIsDestroyed(rowRandom, colRandom, playerAttackedSlotResult);
+                            player.MarkShipOnEdgeAsDestroyed(rowRandom, colRandom, playerAttackedSlotResult);
                         }
                         continue;
                     }
@@ -399,7 +396,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
                     player.Attack(row, col, opponentAttackedSlotResult);
 
                     Console.WriteLine($" You" + player.GetAttackMessage(opponentAttackedSlotResult));
-                    Thread.Sleep(1500);
+                    Thread.Sleep(1000);
 
                     if (player.CheckIfWinner())
                     {
@@ -426,13 +423,13 @@ namespace PT_Console_App_ShipsAndBoatsGame
 
             PrintGameplayUI(player, opponent, stage);
 
-            int didYouWin = 0;
+            bool isWinner = false;
 
             if (player.CheckIfWinner())
-            {                
+            {
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("\n   ~CONGRATULATIONS! YOU WON!~");
-                didYouWin = 1;
+                isWinner = true;
             } // YOU WON
             else if (opponent.CheckIfWinner())
             {
@@ -442,14 +439,14 @@ namespace PT_Console_App_ShipsAndBoatsGame
 
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine($"\n   The game took {stage} stages.");
-            
+
             Thread.Sleep(5000);
             Console.Clear();
 
-            WriteStatistics(didYouWin);
+            UpdateDatabaseStatistics(isWinner);
         }
 
-        public static void WriteStatistics(int didYouWin)
+        public static void UpdateDatabaseStatistics(bool isWinner)
         {
             var connection = new SqlConnection("Server=PT\\SQLEXPRESS;Database=ShipsAndBoatsGame;Integrated Security=True;");
 
@@ -462,7 +459,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
                 var commandGetLost = new SqlCommand("SELECT [Lost] FROM Statisticsss", connection);
                 var resultLost = commandGetLost.ExecuteScalar();
 
-                if (didYouWin == 1)
+                if (isWinner)
                 {
                     int resultWonUpdated = (int)resultWon + 1;
 
@@ -485,11 +482,11 @@ namespace PT_Console_App_ShipsAndBoatsGame
             Console.WriteLine(GameElements.GetTitle());
             Console.WriteLine(GameElements.GetLineSolid());
             Console.WriteLine($"   Opponent:");
-            Console.WriteLine(player.OpponentBattlefield.Print());
+            Console.WriteLine(player.OpponentBattlefield.ToString());
             Console.WriteLine($"   You:");
-            Console.WriteLine(player.PlayerBattlefield.Print());
+            Console.WriteLine(player.PlayerBattlefield.ToString());
             //Console.WriteLine($"   What Opponent sees:");
-            //Console.WriteLine(opponent.OpponentBattlefield.Print());
+            //Console.WriteLine(opponent.OpponentBattlefield.ToString());
             Console.WriteLine(GameElements.GetLegend());
             Console.WriteLine(GameElements.GetLineSolid());
             Console.WriteLine(GameElements.GetCredits());

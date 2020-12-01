@@ -1,5 +1,4 @@
-﻿
-namespace PT_Console_App_ShipsAndBoatsGame
+﻿namespace GameShipsAndBoats.Game.Models.Contracts
 {
     public interface IPlayer
     {
@@ -10,7 +9,7 @@ namespace PT_Console_App_ShipsAndBoatsGame
         public void BotAttack(int row, int col, string result);
 
         public string GetAttackMessage(string result);
-                
+
         public bool CheckIfWinner();
     }
 }
