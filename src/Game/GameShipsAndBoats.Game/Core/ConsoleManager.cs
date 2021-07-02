@@ -4,7 +4,7 @@ namespace GameShipsAndBoats.Game.Core
 {
     public static class ConsoleManager
     {
-        public static void SetConsoleProperties()
+        public static void SetDefaultSettings()
         {
             Console.Title = "Ships&BoatsGame";
 

@@ -77,7 +77,6 @@ namespace GameShipsAndBoats.Game.Models.Common
                 var commandGetLostResult = new SqlCommand("SELECT Lost FROM Statisticsss WHERE ID=1", connection);
                 var resultLost = commandGetLostResult.ExecuteScalar();
                 gamesLost = (int)resultLost;
-
             }
 
             StringBuilder statistics = new StringBuilder();
@@ -89,7 +88,6 @@ namespace GameShipsAndBoats.Game.Models.Common
             statistics.AppendLine($"   │    {gamesWon:D4}    :    {gamesLost:D4}    │");
             statistics.AppendLine($"   │                         │");
             statistics.AppendLine($"   └────────────┴────────────┘");
-
             return statistics.ToString().TrimEnd();
         }
 
@@ -105,6 +103,12 @@ namespace GameShipsAndBoats.Game.Models.Common
             StringBuilder invalidMessage = new StringBuilder();
             invalidMessage.AppendLine($"\n   Press any key to continue...");
             return invalidMessage.ToString().TrimEnd();
+        }
+
+        public static class ErrorMessages
+        {
+            public const string CoordinatesOutOfRange = "The coordinates of the battlefield are out of range!";
+            public const string SlotResultNullOrEmpty = "The slot result could not be null or empty.";
         }
     }
 }

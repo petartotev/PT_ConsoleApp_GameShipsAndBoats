@@ -3,11 +3,11 @@ using System;
 
 namespace GameShipsAndBoats.Game
 {
-    public class Startup
+    public class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
-            ConsoleManager.SetConsoleProperties();
+            ConsoleManager.SetDefaultSettings();
 
             while (true)
             {
