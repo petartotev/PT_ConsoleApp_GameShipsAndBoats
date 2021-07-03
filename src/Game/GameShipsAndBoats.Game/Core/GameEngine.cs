@@ -241,13 +241,13 @@ namespace GameShipsAndBoats.Game.Core
             {
                 ConsolePrinter.PrintLine(ex.Message);
             }
-
-            Thread.Sleep(3000);
-
-            ConsolePrinter.PrintLine(GameElements.GetPressKeyMessage());
-            Console.ReadKey();
-
-            Console.Clear();
+            finally
+            {
+                Thread.Sleep(3000);
+                ConsolePrinter.PrintLine(GameElements.GetPressKeyMessage());
+                Console.ReadKey();
+                Console.Clear();
+            }
         }
 
         public static void PlayIntro()
@@ -393,6 +393,8 @@ namespace GameShipsAndBoats.Game.Core
             finally
             {
                 Thread.Sleep(3000);
+                ConsolePrinter.PrintLine(GameElements.GetPressKeyMessage());
+                Console.ReadKey();
                 Console.Clear();
             }
         }
