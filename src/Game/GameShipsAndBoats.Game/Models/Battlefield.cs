@@ -6,7 +6,7 @@ namespace GameShipsAndBoats.Game.Models
 {
     public class Battlefield : IBattlefield
     {
-        private string[,] field = new string[10, 10];
+        private readonly string[,] _field = new string[10, 10];
 
         public Battlefield()
         {
@@ -15,55 +15,52 @@ namespace GameShipsAndBoats.Game.Models
 
         public string[,] Field
         {
-            get
-            {
-                return this.field;
-            }
+            get => _field;
         }
 
         public string GetSlot(int row, int col)
         {
-            return field[row, col];
+            return _field[row, col];
         }
 
         public void SetSlot(int row, int col, string value)
         {
-            this.field[row, col] = value;
+            _field[row, col] = value;
         }
 
         public void SetBotOpponentSlotsIfAnotherCarrierAround(int row, int col)
         {
             // CHECK FOR ANOTHER CARRIER SLOT ON TOP
-            if ((row - 1 >= 1) && this.field[row - 1, col] == BattlefieldElements.slotCarrier)
+            if ((row - 1 >= 1) && _field[row - 1, col] == BattlefieldElements.slotCarrier)
             {
-                this.field[row - 2, col] = this.field[row + 1, col] = BattlefieldElements.slotOccuppied;
+                _field[row - 2, col] = _field[row + 1, col] = BattlefieldElements.slotOccuppied;
             }
             // CHECK FOR ANOTHER CARRIER SLOT ON BOTTOM
-            else if ((row + 1 <= 8) && this.field[row + 1, col] == BattlefieldElements.slotCarrier)
+            else if ((row + 1 <= 8) && _field[row + 1, col] == BattlefieldElements.slotCarrier)
             {
-                this.field[row + 2, col] = this.field[row - 1, col] = BattlefieldElements.slotOccuppied;
+                _field[row + 2, col] = _field[row - 1, col] = BattlefieldElements.slotOccuppied;
             }
             // CHECK FOR ANOTHER CARRIER SLOT ON LEFT
-            else if ((col - 1 >= 1) && this.field[row, col - 1] == BattlefieldElements.slotCarrier)
+            else if ((col - 1 >= 1) && _field[row, col - 1] == BattlefieldElements.slotCarrier)
             {
-                this.field[row, col - 2] = this.field[row, col + 1] = BattlefieldElements.slotOccuppied;
+                _field[row, col - 2] = _field[row, col + 1] = BattlefieldElements.slotOccuppied;
             }
             // CHECK FOR ANOTHER CARRIER SLOT ON RIGHT
-            else if ((col + 1 <= 8) && this.field[row, col + 1] == BattlefieldElements.slotCarrier)
+            else if ((col + 1 <= 8) && _field[row, col + 1] == BattlefieldElements.slotCarrier)
             {
-                this.field[row, col + 2] = this.field[row, col - 1] = BattlefieldElements.slotOccuppied;
+                _field[row, col + 2] = _field[row, col - 1] = BattlefieldElements.slotOccuppied;
             }
         }
 
         public void SetBotOpponentSlotsAllAroundToDot(int row, int col)
         {
-            for (int i = row - 1; i <= row + 1; i++)
+            for (int r = row - 1; r <= row + 1; r++)
             {
-                for (int j = col - 1; j <= col + 1; j++)
+                for (int c = col - 1; c <= col + 1; c++)
                 {
-                    if ((i >= 0 && i <= 9) && (j >= 0 && j <= 9))
+                    if ((r >= 0 && r <= 9) && (c >= 0 && c <= 9))
                     {
-                        this.field[i, j] = BattlefieldElements.slotOccuppied;
+                        _field[r, c] = BattlefieldElements.slotOccuppied;
                     }
                 }
             }
@@ -71,13 +68,13 @@ namespace GameShipsAndBoats.Game.Models
 
         public void SetBotOpponentSlotsDiagonalToDot(int row, int col)
         {
-            for (int i = row - 1; i <= row + 1; i += 2)
+            for (int r = row - 1; r <= row + 1; r += 2)
             {
-                for (int j = col - 1; j <= col + 1; j += 2)
+                for (int c = col - 1; c <= col + 1; c += 2)
                 {
-                    if ((i >= 0 && i <= 9) && (j >= 0 && j <= 9) && (i != row && j != col))
+                    if ((r >= 0 && r <= 9) && (c >= 0 && c <= 9) && (r != row && c != col))
                     {
-                        this.field[i, j] = BattlefieldElements.slotOccuppied;
+                        _field[r, c] = BattlefieldElements.slotOccuppied;
                     }
                 }
             }
@@ -91,12 +88,12 @@ namespace GameShipsAndBoats.Game.Models
             {
                 for (int rowCurr = 0; rowCurr <= lengthVessel; rowCurr++)
                 {
-                    this.field[rowCurr, col - 1] = this.field[rowCurr, col + 1] = BattlefieldElements.slotOccuppied;
-                    this.field[rowCurr, col] = result;
+                    _field[rowCurr, col - 1] = _field[rowCurr, col + 1] = BattlefieldElements.slotOccuppied;
+                    _field[rowCurr, col] = result;
 
                     if (rowCurr == lengthVessel)
                     {
-                        this.field[rowCurr, col] = BattlefieldElements.slotOccuppied;
+                        _field[rowCurr, col] = BattlefieldElements.slotOccuppied;
                     }
                 }
             } // UPPER EDGE
@@ -104,12 +101,12 @@ namespace GameShipsAndBoats.Game.Models
             {
                 for (int rowCurr = 9; rowCurr >= 9 - lengthVessel; rowCurr--)
                 {
-                    this.field[rowCurr, col - 1] = this.field[rowCurr, col + 1] = BattlefieldElements.slotOccuppied;
-                    this.field[rowCurr, col] = result;
+                    _field[rowCurr, col - 1] = _field[rowCurr, col + 1] = BattlefieldElements.slotOccuppied;
+                    _field[rowCurr, col] = result;
 
                     if (rowCurr == 9 - lengthVessel)
                     {
-                        this.field[rowCurr, col] = BattlefieldElements.slotOccuppied;
+                        _field[rowCurr, col] = BattlefieldElements.slotOccuppied;
                     }
                 }
             } // LOWER EDGE
@@ -117,12 +114,12 @@ namespace GameShipsAndBoats.Game.Models
             {
                 for (int colCurr = 0; colCurr <= lengthVessel; colCurr++)
                 {
-                    this.field[row - 1, colCurr] = this.field[row + 1, colCurr] = BattlefieldElements.slotOccuppied;
-                    this.field[row, colCurr] = result;
+                    _field[row - 1, colCurr] = _field[row + 1, colCurr] = BattlefieldElements.slotOccuppied;
+                    _field[row, colCurr] = result;
 
                     if (colCurr == lengthVessel)
                     {
-                        this.field[row, colCurr] = BattlefieldElements.slotOccuppied;
+                        _field[row, colCurr] = BattlefieldElements.slotOccuppied;
                     }
                 }
             } // LEFT EDGE
@@ -130,12 +127,12 @@ namespace GameShipsAndBoats.Game.Models
             {
                 for (int colCurr = 9; colCurr >= 9 - lengthVessel; colCurr--)
                 {
-                    this.field[row - 1, colCurr] = this.field[row + 1, colCurr] = BattlefieldElements.slotOccuppied;
-                    this.field[row, colCurr] = result;
+                    _field[row - 1, colCurr] = _field[row + 1, colCurr] = BattlefieldElements.slotOccuppied;
+                    _field[row, colCurr] = result;
 
                     if (colCurr == 9 - lengthVessel)
                     {
-                        this.field[row, colCurr] = BattlefieldElements.slotOccuppied;
+                        _field[row, colCurr] = BattlefieldElements.slotOccuppied;
                     }
                 }
             } // RIGHT EDGE
@@ -148,13 +145,13 @@ namespace GameShipsAndBoats.Game.Models
             mySB.AppendLine($"   ║   ║ A B C D E F G H I J ║");
             mySB.AppendLine($"   ╠═══╬═════════════════════╣");
 
-            for (int row = 0; row < this.field.GetLength(0); row++)
+            for (int row = 0; row < _field.GetLength(0); row++)
             {
                 mySB.Append($"   ║ {row} ║ ");
 
-                for (int col = 0; col < this.field.GetLength(1); col++)
+                for (int col = 0; col < _field.GetLength(1); col++)
                 {
-                    mySB.Append(this.field[row, col]);
+                    mySB.Append(_field[row, col]);
                 }
                 mySB.Append("║");
                 mySB.AppendLine();
@@ -164,14 +161,13 @@ namespace GameShipsAndBoats.Game.Models
             return mySB.ToString().TrimEnd();
         }
 
-
         private void SetEmptyBattlefield()
         {
-            for (int row = 0; row < field.GetLength(0); row++)
+            for (int row = 0; row < _field.GetLength(0); row++)
             {
-                for (int col = 0; col < field.GetLength(1); col++)
+                for (int col = 0; col < _field.GetLength(1); col++)
                 {
-                    field[row, col] = BattlefieldElements.slotHidden;
+                    _field[row, col] = BattlefieldElements.slotHidden;
                 }
             }
         }

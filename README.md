@@ -5,7 +5,7 @@
 PT_ConsoleApp_GameShipsAndBoats is a familiar paper-and-pencil game I used to play with my father when I was a child.  
 What we needed were 2 pens, 2 sheets of paper and our backs agains each other!
 
-![GitHub Logo](Resources/Screenshots/PT_ConsoleApp_GameShipsAndBoats.jpg)
+![GitHub Logo](res/scrot/PT_ConsoleApp_GameShipsAndBoats.jpg)
 
 20 years later, I decided to implement the game as a console application.  
 The most interesting challenge was the "AI" algorithm that I needed to write for the role of the Opponent (PC).  
@@ -56,10 +56,10 @@ The one to destroy all enemy's vessels wins.
 
 The solution contains 2 directories:
 
-- Game
+- src
   - GameShipsAndBoats.Game (.NET Core Console Application)
   - GameShipsAndBoats.Game.Tests (NUnit test project)
-- Resources
+- res
   - Screenshots
     - PT_ConsoleApp_GameShipsAndBoats.jpg
   - .ico

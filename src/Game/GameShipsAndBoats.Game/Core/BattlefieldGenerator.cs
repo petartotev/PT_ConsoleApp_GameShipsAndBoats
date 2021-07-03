@@ -15,7 +15,6 @@ namespace GameShipsAndBoats.Game.Core
             return battlefield;
         }
 
-
         private static void GenerateVesselsOnBattlefield(Battlefield battlefield)
         {
             var field = battlefield.Field;
@@ -25,30 +24,21 @@ namespace GameShipsAndBoats.Game.Core
             //LOOP THROUGH PLACING THE 10 VESSELS (1 TANKER => 2 SUBMARINES => 3 CARRIERS => 4 BOATS)
             for (int vesselCount = 1; vesselCount <= 10; vesselCount++)
             {
-                string vessel = string.Empty;
-
-                // GET THE TYPE OF VESSEL BASED ON VESSELCOUNT
-                switch (vesselCount)
+                // GET THE TYPE OF VESSEL BASED ON VESSEL COUNT
+                string vesselType = vesselCount switch
                 {
-                    case 1:
-                        vessel = BattlefieldElements.slotTanker;
-                        break;
-                    case 2:
-                    case 3:
-                        vessel = BattlefieldElements.slotSubmarine;
-                        break;
-                    case 4:
-                    case 5:
-                    case 6:
-                        vessel = BattlefieldElements.slotCarrier;
-                        break;
-                    case 7:
-                    case 8:
-                    case 9:
-                    case 10:
-                        vessel = BattlefieldElements.slotBoat;
-                        break;
-                }
+                    1 => BattlefieldElements.slotTanker,
+                    2 => BattlefieldElements.slotSubmarine,
+                    3 => BattlefieldElements.slotSubmarine,
+                    4 => BattlefieldElements.slotCarrier,
+                    5 => BattlefieldElements.slotCarrier,
+                    6 => BattlefieldElements.slotCarrier,
+                    7 => BattlefieldElements.slotBoat,
+                    8 => BattlefieldElements.slotBoat,
+                    9 => BattlefieldElements.slotBoat,
+                    10 => BattlefieldElements.slotBoat,
+                    _ => string.Empty
+                };
 
                 // PLACE TANKER / SUBMARINE / CARRIER
                 if (vesselCount >= 1 && vesselCount <= 6)
@@ -67,9 +57,9 @@ namespace GameShipsAndBoats.Game.Core
                         // IS IT ON EDGE?
                         else if (BattlefieldValidator.CheckIfSlotIsOnEdge(rowRandom, colRandom))
                         {
-                            if (CheckIfPlacingVesselOnEdgeIsPossible(field, rowRandom, colRandom, vessel))
+                            if (CheckIfPlacingVesselOnEdgeIsPossible(field, rowRandom, colRandom, vesselType))
                             {
-                                PlaceVesselOnEdge(field, rowRandom, colRandom, vessel);
+                                PlaceVesselOnEdge(field, rowRandom, colRandom, vesselType);
                                 break;
                             }
                         }
@@ -79,18 +69,18 @@ namespace GameShipsAndBoats.Game.Core
                             // HORIZONTAL
                             if (horizontalOrVertical == 0)
                             {
-                                if (CheckIfPlacingVesselInTheMiddleIsPossible(field, rowRandom, colRandom, horizontalOrVertical, vessel))
+                                if (CheckIfPlacingVesselInTheMiddleIsPossible(field, rowRandom, colRandom, horizontalOrVertical, vesselType))
                                 {
-                                    PlaceVesselInTheMiddle(field, rowRandom, colRandom, horizontalOrVertical, vessel);
+                                    PlaceVesselInTheMiddle(field, rowRandom, colRandom, horizontalOrVertical, vesselType);
                                     break;
                                 }
                             }
                             // VERTICAL
                             else
                             {
-                                if (CheckIfPlacingVesselInTheMiddleIsPossible(field, rowRandom, colRandom, horizontalOrVertical, vessel))
+                                if (CheckIfPlacingVesselInTheMiddleIsPossible(field, rowRandom, colRandom, horizontalOrVertical, vesselType))
                                 {
-                                    PlaceVesselInTheMiddle(field, rowRandom, colRandom, horizontalOrVertical, vessel);
+                                    PlaceVesselInTheMiddle(field, rowRandom, colRandom, horizontalOrVertical, vesselType);
                                     break;
                                 }
                             }
@@ -117,20 +107,16 @@ namespace GameShipsAndBoats.Game.Core
 
         private static bool CheckIfSlotIsEmptyOrOccuppied(string[,] field, int row, int col)
         {
-            if (field[row, col] == BattlefieldElements.slotHidden || field[row, col] == BattlefieldElements.slotOccuppied)
-            {
-                return true;
-            }
-            return false;
+            return (field[row, col] == BattlefieldElements.slotHidden || field[row, col] == BattlefieldElements.slotOccuppied);
         }
 
         private static bool CheckIfAllSlotsAroundAreEmptyOrOccuppied(string[,] field, int row, int col)
         {
-            for (int i = row - 1; i <= row + 1; i++)
+            for (int r = row - 1; r <= row + 1; r++)
             {
-                for (int j = col - 1; j <= col + 1; j++)
+                for (int c = col - 1; c <= col + 1; c++)
                 {
-                    if ((i >= 0 && i <= 9 && j >= 0 && j <= 9) && (field[i, j] != BattlefieldElements.slotHidden && field[i, j] != BattlefieldElements.slotOccuppied))
+                    if ((r >= 0 && r <= 9 && c >= 0 && c <= 9) && (field[r, c] != BattlefieldElements.slotHidden && field[r, c] != BattlefieldElements.slotOccuppied))
                     {
                         return false;
                     }
@@ -146,11 +132,11 @@ namespace GameShipsAndBoats.Game.Core
             // IF ON TOP EDGE
             if (row == 0 && (col > 0 && col < 9))
             {
-                for (int i = 0; i <= lengthVessel; i++)
+                for (int r = 0; r <= lengthVessel; r++)
                 {
-                    for (int j = col - 1; j <= col + 1; j++)
+                    for (int c = col - 1; c <= col + 1; c++)
                     {
-                        if (field[i, j] != BattlefieldElements.slotOccuppied && field[i, j] != BattlefieldElements.slotHidden)
+                        if (field[r, c] != BattlefieldElements.slotOccuppied && field[r, c] != BattlefieldElements.slotHidden)
                         {
                             return false;
                         }
@@ -161,11 +147,11 @@ namespace GameShipsAndBoats.Game.Core
             // IF ON BOTTOM EDGE
             else if (row == 9 && (col > 0 && col < 9))
             {
-                for (int i = 9; i >= 9 - lengthVessel; i--)
+                for (int r = 9; r >= 9 - lengthVessel; r--)
                 {
-                    for (int j = col - 1; j <= col + 1; j++)
+                    for (int c = col - 1; c <= col + 1; c++)
                     {
-                        if (field[i, j] != BattlefieldElements.slotOccuppied && field[i, j] != BattlefieldElements.slotHidden)
+                        if (field[r, c] != BattlefieldElements.slotOccuppied && field[r, c] != BattlefieldElements.slotHidden)
                         {
                             return false;
                         }
@@ -176,11 +162,11 @@ namespace GameShipsAndBoats.Game.Core
             // IF ON LEFT EDGE
             else if ((row > 0 && row < 9) && col == 0)
             {
-                for (int i = row - 1; i <= row + 1; i++)
+                for (int r = row - 1; r <= row + 1; r++)
                 {
-                    for (int j = 0; j <= lengthVessel; j++)
+                    for (int c = 0; c <= lengthVessel; c++)
                     {
-                        if (field[i, j] != BattlefieldElements.slotOccuppied && field[i, j] != BattlefieldElements.slotHidden)
+                        if (field[r, c] != BattlefieldElements.slotOccuppied && field[r, c] != BattlefieldElements.slotHidden)
                         {
                             return false;
                         }
@@ -191,11 +177,11 @@ namespace GameShipsAndBoats.Game.Core
             // IF ON RIGHT EDGE
             else if ((row > 0 && row < 9) && col == 9)
             {
-                for (int i = row - 1; i <= row + 1; i++)
+                for (int r = row - 1; r <= row + 1; r++)
                 {
-                    for (int j = 9; j >= 9 - lengthVessel; j--)
+                    for (int c = 9; c >= 9 - lengthVessel; c--)
                     {
-                        if (field[i, j] != BattlefieldElements.slotOccuppied && field[i, j] != BattlefieldElements.slotHidden)
+                        if (field[r, c] != BattlefieldElements.slotOccuppied && field[r, c] != BattlefieldElements.slotHidden)
                         {
                             return false;
                         }
@@ -219,11 +205,11 @@ namespace GameShipsAndBoats.Game.Core
                 // LEFT HALF GOING RIGHT
                 if (col >= 0 && col <= 4)
                 {
-                    for (int i = row - 1; i <= row + 1; i++)
+                    for (int r = row - 1; r <= row + 1; r++)
                     {
-                        for (int j = col - 1; j <= col + vesselLength; j++)
+                        for (int c = col - 1; c <= col + vesselLength; c++)
                         {
-                            if ((i >= 0 && i <= 9 && j >= 0 && j <= 9) && (field[i, j] != BattlefieldElements.slotOccuppied && field[i, j] != BattlefieldElements.slotHidden))
+                            if ((r >= 0 && r <= 9 && c >= 0 && c <= 9) && (field[r, c] != BattlefieldElements.slotOccuppied && field[r, c] != BattlefieldElements.slotHidden))
                             {
                                 return false;
                             }
@@ -234,11 +220,11 @@ namespace GameShipsAndBoats.Game.Core
                 // RIGHT HALF GOING LEFT
                 else
                 {
-                    for (int i = row - 1; i <= row + 1; i++)
+                    for (int r = row - 1; r <= row + 1; r++)
                     {
-                        for (int j = col + 1; j >= col - vesselLength; j--)
+                        for (int c = col + 1; c >= col - vesselLength; c--)
                         {
-                            if ((i >= 0 && i <= 9 && j >= 0 && j <= 9) && (field[i, j] != BattlefieldElements.slotOccuppied && field[i, j] != BattlefieldElements.slotHidden))
+                            if ((r >= 0 && r <= 9 && c >= 0 && c <= 9) && (field[r, c] != BattlefieldElements.slotOccuppied && field[r, c] != BattlefieldElements.slotHidden))
                             {
                                 return false;
                             }
@@ -253,11 +239,11 @@ namespace GameShipsAndBoats.Game.Core
                 // UPPER PART GOING DOWN
                 if (row >= 0 && row <= 4)
                 {
-                    for (int i = row - 1; i <= row + vesselLength; i++)
+                    for (int r = row - 1; r <= row + vesselLength; r++)
                     {
-                        for (int j = col - 1; j <= col + 1; j++)
+                        for (int c = col - 1; c <= col + 1; c++)
                         {
-                            if ((i >= 0 && i <= 9 && j >= 0 && j <= 9) && (field[i, j] != BattlefieldElements.slotOccuppied && field[i, j] != BattlefieldElements.slotHidden))
+                            if ((r >= 0 && r <= 9 && c >= 0 && c <= 9) && (field[r, c] != BattlefieldElements.slotOccuppied && field[r, c] != BattlefieldElements.slotHidden))
                             {
                                 return false;
                             }
@@ -268,11 +254,11 @@ namespace GameShipsAndBoats.Game.Core
                 // LOWER PART GOING UP
                 else
                 {
-                    for (int i = row + 1; i >= row - vesselLength; i--)
+                    for (int r = row + 1; r >= row - vesselLength; r--)
                     {
-                        for (int j = col - 1; j <= col + 1; j++)
+                        for (int c = col - 1; c <= col + 1; c++)
                         {
-                            if ((i >= 0 && i <= 9 && j >= 0 && j <= 9) && (field[i, j] != BattlefieldElements.slotOccuppied && field[i, j] != BattlefieldElements.slotHidden))
+                            if ((r >= 0 && r <= 9 && c >= 0 && c <= 9) && (field[r, c] != BattlefieldElements.slotOccuppied && field[r, c] != BattlefieldElements.slotHidden))
                             {
                                 return false;
                             }
@@ -290,14 +276,14 @@ namespace GameShipsAndBoats.Game.Core
             // UPPER EDGE
             if (row == 0 && (col > 0 && col < 9))
             {
-                for (int i = 0; i <= lengthVessel; i++)
+                for (int r = 0; r <= lengthVessel; r++)
                 {
-                    for (int j = col - 1; j <= col + 1; j++)
+                    for (int c = col - 1; c <= col + 1; c++)
                     {
-                        field[i, j] = BattlefieldElements.slotOccuppied;
-                        if (j == col && i != lengthVessel)
+                        field[r, c] = BattlefieldElements.slotOccuppied;
+                        if (c == col && r != lengthVessel)
                         {
-                            field[i, j] = vessel;
+                            field[r, c] = vessel;
                         }
                     }
                 }
@@ -305,15 +291,15 @@ namespace GameShipsAndBoats.Game.Core
             // LOWER EDGE
             else if (row == 9 && (col > 0 && col < 9))
             {
-                for (int i = 9; i >= 9 - lengthVessel; i--)
+                for (int r = 9; r >= 9 - lengthVessel; r--)
                 {
-                    for (int j = col - 1; j <= col + 1; j++)
+                    for (int c = col - 1; c <= col + 1; c++)
                     {
-                        field[i, j] = BattlefieldElements.slotOccuppied;
+                        field[r, c] = BattlefieldElements.slotOccuppied;
 
-                        if (j == col && i != 9 - lengthVessel)
+                        if (c == col && r != 9 - lengthVessel)
                         {
-                            field[i, j] = vessel;
+                            field[r, c] = vessel;
                         }
                     }
                 }
@@ -321,14 +307,14 @@ namespace GameShipsAndBoats.Game.Core
             // LEFT EDGE
             else if ((row > 0 && row < 9) && col == 0)
             {
-                for (int i = row - 1; i <= row + 1; i++)
+                for (int r = row - 1; r <= row + 1; r++)
                 {
-                    for (int j = 0; j <= lengthVessel; j++)
+                    for (int c = 0; c <= lengthVessel; c++)
                     {
-                        field[i, j] = BattlefieldElements.slotOccuppied;
-                        if (i == row && j != lengthVessel)
+                        field[r, c] = BattlefieldElements.slotOccuppied;
+                        if (r == row && c != lengthVessel)
                         {
-                            field[i, j] = vessel;
+                            field[r, c] = vessel;
                         }
                     }
                 }
@@ -336,14 +322,14 @@ namespace GameShipsAndBoats.Game.Core
             // RIGHT EDGE
             else if ((row > 0 && row < 9) && col == 9)
             {
-                for (int i = row - 1; i <= row + 1; i++)
+                for (int r = row - 1; r <= row + 1; r++)
                 {
-                    for (int j = 9; j >= 9 - lengthVessel; j--)
+                    for (int c = 9; c >= 9 - lengthVessel; c--)
                     {
-                        field[i, j] = BattlefieldElements.slotOccuppied;
-                        if (i == row && j != 9 - lengthVessel)
+                        field[r, c] = BattlefieldElements.slotOccuppied;
+                        if (r == row && c != 9 - lengthVessel)
                         {
-                            field[i, j] = vessel;
+                            field[r, c] = vessel;
                         }
                     }
                 }
@@ -360,18 +346,18 @@ namespace GameShipsAndBoats.Game.Core
                 // LEFT HALF GOING RIGHT
                 if (col >= 0 && col <= 4)
                 {
-                    for (int i = row - 1; i <= row + 1; i++)
+                    for (int r = row - 1; r <= row + 1; r++)
                     {
-                        for (int j = col - 1; j < col + vesselLength; j++)
+                        for (int c = col - 1; c < col + vesselLength; c++)
                         {
-                            if ((i >= 0 && i <= 9 && j >= 0 && j <= 9) && (field[i, j] != BattlefieldElements.slotOccuppied || field[i, j] != BattlefieldElements.slotHidden))
+                            if ((r >= 0 && r <= 9 && c >= 0 && c <= 9) && (field[r, c] != BattlefieldElements.slotOccuppied || field[r, c] != BattlefieldElements.slotHidden))
                             {
-                                field[i, j] = BattlefieldElements.slotOccuppied;
+                                field[r, c] = BattlefieldElements.slotOccuppied;
                             }
 
-                            if ((i >= 0 && i <= 9 && j >= 0 && j <= 9) && (i == row) && (j != col - 1 && j != col + vesselLength))
+                            if ((r >= 0 && r <= 9 && c >= 0 && c <= 9) && (r == row) && (c != col - 1 && c != col + vesselLength))
                             {
-                                field[i, j] = vessel;
+                                field[r, c] = vessel;
                             }
                         }
                     }
@@ -379,18 +365,18 @@ namespace GameShipsAndBoats.Game.Core
                 // RIGHT HALF GOING LEFT
                 else
                 {
-                    for (int i = row - 1; i <= row + 1; i++)
+                    for (int r = row - 1; r <= row + 1; r++)
                     {
-                        for (int j = col + 1; j >= col - vesselLength; j--)
+                        for (int c = col + 1; c >= col - vesselLength; c--)
                         {
-                            if ((i >= 0 && i <= 9 && j >= 0 && j <= 9) && (field[i, j] != BattlefieldElements.slotOccuppied || field[i, j] != BattlefieldElements.slotHidden))
+                            if ((r >= 0 && r <= 9 && c >= 0 && c <= 9) && (field[r, c] != BattlefieldElements.slotOccuppied || field[r, c] != BattlefieldElements.slotHidden))
                             {
-                                field[i, j] = BattlefieldElements.slotOccuppied;
+                                field[r, c] = BattlefieldElements.slotOccuppied;
                             }
 
-                            if ((i >= 0 && i <= 9 && j >= 0 && j <= 9) && i == row && (j != col + 1 && j != col - vesselLength))
+                            if ((r >= 0 && r <= 9 && c >= 0 && c <= 9) && r == row && (c != col + 1 && c != col - vesselLength))
                             {
-                                field[i, j] = vessel;
+                                field[r, c] = vessel;
                             }
                         }
                     }
@@ -402,18 +388,18 @@ namespace GameShipsAndBoats.Game.Core
                 // UPPER PART GOING DOWN
                 if (row >= 0 && row <= 4)
                 {
-                    for (int i = row - 1; i <= row + vesselLength; i++)
+                    for (int r = row - 1; r <= row + vesselLength; r++)
                     {
-                        for (int j = col - 1; j <= col + 1; j++)
+                        for (int c = col - 1; c <= col + 1; c++)
                         {
-                            if ((i >= 0 && i <= 9 && j >= 0 && j <= 9) && (field[i, j] != BattlefieldElements.slotOccuppied || field[i, j] != BattlefieldElements.slotHidden))
+                            if ((r >= 0 && r <= 9 && c >= 0 && c <= 9) && (field[r, c] != BattlefieldElements.slotOccuppied || field[r, c] != BattlefieldElements.slotHidden))
                             {
-                                field[i, j] = BattlefieldElements.slotOccuppied;
+                                field[r, c] = BattlefieldElements.slotOccuppied;
                             }
 
-                            if ((i >= 0 && i <= 9 && j >= 0 && j <= 9) && j == col && (i != row - 1 && i != row + vesselLength))
+                            if ((r >= 0 && r <= 9 && c >= 0 && c <= 9) && c == col && (r != row - 1 && r != row + vesselLength))
                             {
-                                field[i, j] = vessel;
+                                field[r, c] = vessel;
                             }
                         }
                     }
@@ -421,18 +407,18 @@ namespace GameShipsAndBoats.Game.Core
                 // LOWER PART GOING UP
                 else
                 {
-                    for (int i = row + 1; i >= row - vesselLength; i--)
+                    for (int r = row + 1; r >= row - vesselLength; r--)
                     {
-                        for (int j = col - 1; j <= col + 1; j++)
+                        for (int c = col - 1; c <= col + 1; c++)
                         {
-                            if ((i >= 0 && i <= 9 && j >= 0 && j <= 9) && (field[i, j] != BattlefieldElements.slotOccuppied || field[i, j] != BattlefieldElements.slotHidden))
+                            if ((r >= 0 && r <= 9 && c >= 0 && c <= 9) && (field[r, c] != BattlefieldElements.slotOccuppied || field[r, c] != BattlefieldElements.slotHidden))
                             {
-                                field[i, j] = BattlefieldElements.slotOccuppied;
+                                field[r, c] = BattlefieldElements.slotOccuppied;
                             }
 
-                            if ((i >= 0 && i <= 9 && j >= 0 && j <= 9) && (j == col) && (i != row + 1 && i != row - vesselLength))
+                            if ((r >= 0 && r <= 9 && c >= 0 && c <= 9) && (c == col) && (r != row + 1 && r != row - vesselLength))
                             {
-                                field[i, j] = vessel;
+                                field[r, c] = vessel;
                             }
                         }
                     }
@@ -442,13 +428,13 @@ namespace GameShipsAndBoats.Game.Core
 
         private static void PlaceBoat(string[,] field, int row, int col)
         {
-            for (int i = row - 1; i <= row + 1; i++)
+            for (int r = row - 1; r <= row + 1; r++)
             {
-                for (int j = col - 1; j <= col + 1; j++)
+                for (int c = col - 1; c <= col + 1; c++)
                 {
-                    if ((i >= 0 && i <= 9 && j >= 0 && j <= 9))
+                    if ((r >= 0 && r <= 9 && c >= 0 && c <= 9))
                     {
-                        field[i, j] = BattlefieldElements.slotOccuppied;
+                        field[r, c] = BattlefieldElements.slotOccuppied;
                     }
                 }
             }
