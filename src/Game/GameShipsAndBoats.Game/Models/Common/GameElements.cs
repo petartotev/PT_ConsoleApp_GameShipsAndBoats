@@ -38,10 +38,10 @@ namespace GameShipsAndBoats.Game.Models.Common
             StringBuilder legend = new StringBuilder();
             legend.AppendLine($"   Legend: ");
             legend.AppendLine($"   ┌─────────────────────────┐");
-            legend.AppendLine($"   │ 1 x T T T T     (Tanker)│");
-            legend.AppendLine($"   │ 2 x S S S    (Submarine)│");
-            legend.AppendLine($"   │ 3 x C C   (Carrier ship)│");
-            legend.AppendLine($"   │ 4 x B             (Boat)│");
+            legend.AppendLine($"   │ 1 x T T T T      Tanker │");
+            legend.AppendLine($"   │ 2 x S S S     Submarine │");
+            legend.AppendLine($"   │ 3 x C C         Carrier │");
+            legend.AppendLine($"   │ 4 x B              Boat │");
             legend.AppendLine($"   └─────────────────────────┘");
             return legend.ToString().TrimEnd();
         }
@@ -94,7 +94,7 @@ namespace GameShipsAndBoats.Game.Models.Common
         public static string GetInvalidMessage()
         {
             StringBuilder invalidMessage = new StringBuilder();
-            invalidMessage.AppendLine($" Invalid!");
+            invalidMessage.AppendLine($" Invalid input!");
             return invalidMessage.ToString().TrimEnd();
         }
 

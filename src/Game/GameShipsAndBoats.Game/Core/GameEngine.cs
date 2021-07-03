@@ -268,11 +268,13 @@ namespace GameShipsAndBoats.Game.Core
             var player = new Player();
             var opponent = new Opponent();
 
+            bool isOpponentViewEnabled = GetUserInputIsOpponentViewEnabled();
+
             while (true)
             {
                 while (true)
                 {
-                    PrintGameplayUI(player, opponent, stage);
+                    PrintGameplayUI(player, opponent, stage, isOpponentViewEnabled);
 
                     Random random = new Random();
 
@@ -315,7 +317,7 @@ namespace GameShipsAndBoats.Game.Core
 
                 while (true)
                 {
-                    PrintGameplayUI(player, opponent, stage);
+                    PrintGameplayUI(player, opponent, stage, isOpponentViewEnabled);
 
                     int row = -1;
                     int col = -1;
@@ -360,7 +362,7 @@ namespace GameShipsAndBoats.Game.Core
                 stage++; // END OF STAGE
             }
 
-            PrintGameplayUI(player, opponent, stage);
+            PrintGameplayUI(player, opponent, stage, isOpponentViewEnabled);
 
             bool isWinner = false;
 
@@ -388,6 +390,29 @@ namespace GameShipsAndBoats.Game.Core
             {
                 Thread.Sleep(3000);
                 Console.Clear();
+            }
+        }
+
+        private static bool GetUserInputIsOpponentViewEnabled()
+        {
+            while (true)
+            {
+                Console.Clear();
+                ConsolePrinter.PrintLine(GameElements.GetTitle());
+                ConsolePrinter.PrintLine(GameElements.GetLineSolid());
+                ConsolePrinter.PrintLine("  Do you want to see what the");
+                ConsolePrinter.Print("  Opponent sees (Y/N): ");
+
+                switch (Console.ReadKey(true).Key)
+                {
+                    case ConsoleKey.Y:
+                        return true;
+                    case ConsoleKey.N:
+                        return false;
+                    default:
+                        ConsolePrinter.PrintLine(GameElements.GetInvalidMessage());
+                        break;
+                }
             }
         }
 
@@ -419,7 +444,11 @@ namespace GameShipsAndBoats.Game.Core
             }
         }
 
-        private static void PrintGameplayUI(IPlayer player, IPlayer opponent, int stage)
+        private static void PrintGameplayUI(
+            IPlayer player,
+            IPlayer opponent,
+            int stage,
+            bool isOpponentViewEnabled = false)
         {
             Console.Clear();
             ConsolePrinter.PrintLine(GameElements.GetTitle());
@@ -428,8 +457,13 @@ namespace GameShipsAndBoats.Game.Core
             ConsolePrinter.PrintLine(player.EnemyBattlefield.ToString());
             ConsolePrinter.PrintLine($"   You:");
             ConsolePrinter.PrintLine(player.PlayerBattlefield.ToString());
-            //ConsolePrinter.WriteLine($"   Opponent sees:");
-            //ConsolePrinter.WriteLine(opponent.OpponentBattlefield.ToString());
+
+            if (isOpponentViewEnabled)
+            {
+                ConsolePrinter.PrintLine($"   Opponent sees:");
+                ConsolePrinter.PrintLine(opponent.EnemyBattlefield.ToString());
+            }
+
             ConsolePrinter.PrintLine(GameElements.GetLegend());
             ConsolePrinter.PrintLine(GameElements.GetLineSolid());
             ConsolePrinter.PrintLine(GameElements.GetCredits());
