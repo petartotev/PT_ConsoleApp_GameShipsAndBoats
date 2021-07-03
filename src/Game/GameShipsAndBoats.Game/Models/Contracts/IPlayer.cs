@@ -2,14 +2,16 @@
 {
     public interface IPlayer
     {
-        public void Attack(int row, int col, string result);
+        Battlefield PlayerBattlefield { get; }
 
-        public string GetAttacked(int row, int col);
+        Battlefield EnemyBattlefield { get; }
 
-        public void BotAttack(int row, int col, string result);
+        void Attack(int row, int col, string result);
 
-        public string GetAttackMessage(string result);
+        string GetAttacked(int row, int col);
 
-        public bool CheckIfWinner();
+        string GetAttackedMessage(string result);
+
+        bool CheckIfWinner();
     }
 }

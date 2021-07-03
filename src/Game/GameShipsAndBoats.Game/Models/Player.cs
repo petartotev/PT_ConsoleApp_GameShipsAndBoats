@@ -5,16 +5,16 @@ namespace GameShipsAndBoats.Game.Models
 {
     public class Player : BasePlayer
     {
-        public override void Attack(int row, int col, string resultSlot)
+        public override void Attack(int row, int col, string result)
         {
-            _opponentBattlefield.SetSlot(row, col, resultSlot);
+            _opponentBattlefield.SetSlot(row, col, result);
         }
 
-        public void MarkShipOnEdgeAsDestroyed(int row, int col, string vessel)
+        public void MarkShipOnEdgeAsDestroyed(int row, int col, string result)
         {
-            int lengthVessel = BattlefieldElements.GetVesselLength(vessel);
+            int lengthVessel = BattlefieldElements.GetVesselLength(result);
 
-            if (BattlefieldElements.listSlotsVessels.Contains(vessel))
+            if (BattlefieldElements.listSlotsVessels.Contains(result))
             {
                 // TOP EDGE
                 if (row == 0 && (col > 0 && col < 9))

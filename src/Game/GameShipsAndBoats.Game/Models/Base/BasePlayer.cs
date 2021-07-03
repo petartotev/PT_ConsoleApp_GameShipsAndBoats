@@ -62,9 +62,9 @@ namespace GameShipsAndBoats.Game.Models.Base
             }
         }
 
-        public string GetAttackedMessage(string vessel)
+        public string GetAttackedMessage(string result)
         {
-            return vessel switch
+            return result switch
             {
                 BattlefieldElements.slotTanker => " hit a Tanker (TTTT)!",
                 BattlefieldElements.slotSubmarine => " hit a Submarine (SSS)!",
