@@ -384,6 +384,10 @@ namespace GameShipsAndBoats.Game.Core
             }
             catch (Exception ex)
             {
+                Console.Clear();
+                ConsolePrinter.PrintLine(GameElements.GetTitle());
+                ConsolePrinter.PrintLine(GameElements.GetLineSolid());
+                Thread.Sleep(1000);
                 ConsolePrinter.PrintLine(ex.Message);
             }
             finally
