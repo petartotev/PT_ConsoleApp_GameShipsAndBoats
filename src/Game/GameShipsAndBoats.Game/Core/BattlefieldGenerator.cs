@@ -105,11 +105,6 @@ namespace GameShipsAndBoats.Game.Core
             }
         }
 
-        private static bool CheckIfSlotIsEmptyOrOccuppied(string[,] field, int row, int col)
-        {
-            return (field[row, col] == BattlefieldElements.slotHidden || field[row, col] == BattlefieldElements.slotOccuppied);
-        }
-
         private static bool CheckIfAllSlotsAroundAreEmptyOrOccuppied(string[,] field, int row, int col)
         {
             for (int r = row - 1; r <= row + 1; r++)

@@ -1,5 +1,4 @@
 ﻿using GameShipsAndBoats.Game.Models;
-using GameShipsAndBoats.Game.Models.Base;
 using GameShipsAndBoats.Game.Models.Common;
 using GameShipsAndBoats.Game.Models.Contracts;
 using System;
@@ -28,7 +27,7 @@ namespace GameShipsAndBoats.Game.Core
                     case ConsoleKey.S:
                         return "STATISTICS";
                     default:
-                        ConsolePrinter.PrintLine(GameElements.GetInvalidMessage(), ConsoleColor.Red);
+                        ConsolePrinter.PrintLine(GameElements.ErrorMessages.InvalidInput, ConsoleColor.Red);
                         break;
                 }
             }
@@ -39,8 +38,8 @@ namespace GameShipsAndBoats.Game.Core
             Console.Clear();
 
             Thread.Sleep(1000);
-            ConsolePrinter.PrintLine(GameElements.GetTitle());
-            ConsolePrinter.PrintLine(GameElements.GetLineSolid());
+            ConsolePrinter.PrintLine(GameElements.Title);
+            ConsolePrinter.PrintLine(GameElements.LineSolid);
 
             Battlefield instructionsBattlefield = BattlefieldGenerator.GenerateNewBattlefield();
 
@@ -51,7 +50,7 @@ namespace GameShipsAndBoats.Game.Core
             ConsolePrinter.PrintLine(instructionsBattlefield.ToString());
 
             Thread.Sleep(1000);
-            ConsolePrinter.PrintLine(GameElements.GetLegend());
+            ConsolePrinter.PrintLine(GameElements.Legend);
 
             Thread.Sleep(3000);
             ConsolePrinter.PrintLine("  Both opponents should place");
@@ -64,7 +63,7 @@ namespace GameShipsAndBoats.Game.Core
             Thread.Sleep(750);
             ConsolePrinter.PrintLine("  - 4 boats (B) on their field.");
             Thread.Sleep(1500);
-            ConsolePrinter.PrintLine("\n  The 4 boats (B) can be placed ");
+            ConsolePrinter.PrintLine("\r\n  The 4 boats (B) can be placed ");
             Thread.Sleep(750);
             ConsolePrinter.PrintLine("  anywhere.");
             Thread.Sleep(750);
@@ -79,8 +78,8 @@ namespace GameShipsAndBoats.Game.Core
 
             Console.Clear();
 
-            ConsolePrinter.PrintLine(GameElements.GetTitle());
-            ConsolePrinter.PrintLine(GameElements.GetLineSolid());
+            ConsolePrinter.PrintLine(GameElements.Title);
+            ConsolePrinter.PrintLine(GameElements.LineSolid);
 
             ConsolePrinter.PrintLine($"   Instructions:");
             ConsolePrinter.PrintLine($"   ╔═══╦═════════════════════╗");
@@ -114,33 +113,33 @@ namespace GameShipsAndBoats.Game.Core
                         ConsolePrinter.Print(BattlefieldElements.slotEmpty);
                     }
                 }
-                ConsolePrinter.Print("║\n");
+                ConsolePrinter.Print("║\r\n");
             }
             ConsolePrinter.PrintLine($"   ╚═══╩═════════════════════╝");
 
-            ConsolePrinter.PrintLine(GameElements.GetLegend());
+            ConsolePrinter.PrintLine(GameElements.Legend);
 
             Thread.Sleep(1000);
-            ConsolePrinter.PrintLine($"\n   CORRECT.", ConsoleColor.Green);
+            ConsolePrinter.PrintLine($"\r\n   CORRECT.", ConsoleColor.Green);
 
             Thread.Sleep(1000);
-            ConsolePrinter.PrintLine($"\n   NOT CORRECT!!!", ConsoleColor.Red);
+            ConsolePrinter.PrintLine($"\r\n   NOT CORRECT!!!", ConsoleColor.Red);
 
             Thread.Sleep(5000);
 
-            ConsolePrinter.PrintLine(GameElements.GetPressKeyMessage());
+            ConsolePrinter.PrintLine(GameElements.PressAnyKey);
             Console.ReadKey();
 
             Console.Clear();
 
-            ConsolePrinter.PrintLine(GameElements.GetTitle());
-            ConsolePrinter.PrintLine(GameElements.GetLineSolid());
+            ConsolePrinter.PrintLine(GameElements.Title);
+            ConsolePrinter.PrintLine(GameElements.LineSolid);
 
             ConsolePrinter.PrintLine($"   Instructions:");
 
             ConsolePrinter.PrintLine(instructionsBattlefield.ToString());
 
-            ConsolePrinter.PrintLine(GameElements.GetLegend());
+            ConsolePrinter.PrintLine(GameElements.Legend);
 
             Thread.Sleep(3000);
             ConsolePrinter.PrintLine("  There should be at least 1 ");
@@ -149,15 +148,15 @@ namespace GameShipsAndBoats.Game.Core
             Thread.Sleep(750);
             ConsolePrinter.PrintLine("  placed on the field.");
             Thread.Sleep(1500);
-            ConsolePrinter.PrintLine("\n  In other words, 2 vessels ");
+            ConsolePrinter.PrintLine("\r\n  In other words, 2 vessels ");
             Thread.Sleep(750);
             ConsolePrinter.PrintLine("  cannot \"touch\".");
             Thread.Sleep(5000);
 
             Console.Clear();
 
-            ConsolePrinter.PrintLine(GameElements.GetTitle());
-            ConsolePrinter.PrintLine(GameElements.GetLineSolid());
+            ConsolePrinter.PrintLine(GameElements.Title);
+            ConsolePrinter.PrintLine(GameElements.LineSolid);
 
             ConsolePrinter.PrintLine($"   Instructions:");
             ConsolePrinter.PrintLine($"   ╔═══╦═════════════════════╗");
@@ -203,21 +202,21 @@ namespace GameShipsAndBoats.Game.Core
                         ConsolePrinter.Print("  ");
                     }
                 }
-                ConsolePrinter.Print("║\n");
+                ConsolePrinter.Print("║\r\n");
             }
             ConsolePrinter.PrintLine($"   ╚═══╩═════════════════════╝");
 
-            ConsolePrinter.PrintLine(GameElements.GetLegend());
+            ConsolePrinter.PrintLine(GameElements.Legend);
 
             Thread.Sleep(1000);
-            ConsolePrinter.PrintLine($"\n   CORRECT.\n", ConsoleColor.Green);
+            ConsolePrinter.PrintLine($"\r\n   CORRECT.\r\n", ConsoleColor.Green);
 
             Thread.Sleep(1000);
             ConsolePrinter.PrintLine($"   NOT CORRECT!!!", ConsoleColor.Red);
 
             Thread.Sleep(5000);
 
-            ConsolePrinter.PrintLine(GameElements.GetPressKeyMessage());
+            ConsolePrinter.PrintLine(GameElements.PressAnyKey);
             Console.ReadKey();
 
             Console.Clear();
@@ -228,14 +227,15 @@ namespace GameShipsAndBoats.Game.Core
             Console.Clear();
 
             Thread.Sleep(1000);
-            ConsolePrinter.PrintLine(GameElements.GetTitle());
-            ConsolePrinter.PrintLine(GameElements.GetLineSolid());
+            ConsolePrinter.PrintLine(GameElements.Title);
+            ConsolePrinter.PrintLine(GameElements.LineSolid);
 
             Thread.Sleep(1000);
 
             try
             {
-                ConsolePrinter.PrintLine(GameElements.GetStatistics());
+                string[] gamesWonAndLost = GetStatistics();
+                ConsolePrinter.PrintLine(string.Format(GameElements.Statistics, gamesWonAndLost[0], gamesWonAndLost[1]));
             }
             catch (Exception ex)
             {
@@ -244,7 +244,7 @@ namespace GameShipsAndBoats.Game.Core
             finally
             {
                 Thread.Sleep(3000);
-                ConsolePrinter.PrintLine(GameElements.GetPressKeyMessage());
+                ConsolePrinter.PrintLine(GameElements.PressAnyKey);
                 Console.ReadKey();
                 Console.Clear();
             }
@@ -253,11 +253,11 @@ namespace GameShipsAndBoats.Game.Core
         public static void PlayIntro()
         {
             Thread.Sleep(1000);
-            ConsolePrinter.PrintLine(GameElements.GetTitle());
-            ConsolePrinter.PrintLine(GameElements.GetLineSolid());
+            ConsolePrinter.PrintLine(GameElements.Title);
+            ConsolePrinter.PrintLine(GameElements.LineSolid);
 
             Thread.Sleep(1000);
-            ConsolePrinter.PrintLine(GameElements.GetMenu());
+            ConsolePrinter.PrintLine(GameElements.Menu);
 
             Thread.Sleep(1000);
         }
@@ -338,7 +338,7 @@ namespace GameShipsAndBoats.Game.Core
                             break;
                         }
 
-                        ConsolePrinter.PrintLine(GameElements.GetInvalidMessage(), ConsoleColor.Red);
+                        ConsolePrinter.PrintLine(GameElements.ErrorMessages.InvalidInput, ConsoleColor.Red);
                     } // GET CORRECT INPUT
 
                     string slotResultOpponentAttacked = opponent.GetAttacked(row, col);
@@ -368,15 +368,15 @@ namespace GameShipsAndBoats.Game.Core
 
             if (player.CheckIfWinner())
             {
-                ConsolePrinter.PrintLine("\n   ~CONGRATULATIONS! YOU WON!~", ConsoleColor.Green);
+                ConsolePrinter.PrintLine("\r\n   ~CONGRATULATIONS! YOU WON!~", ConsoleColor.Green);
                 isWinner = true;
             }
             else if (opponent.CheckIfWinner())
             {
-                ConsolePrinter.PrintLine("\n   ~CONDOLENCES... YOU LOST!~", ConsoleColor.Red);
+                ConsolePrinter.PrintLine("\r\n   ~CONDOLENCES... YOU LOST!~", ConsoleColor.Red);
             }
 
-            ConsolePrinter.PrintLine($"\n   The game took {stage} stages.");
+            ConsolePrinter.PrintLine($"\r\n   The game took {stage} stages.");
 
             try
             {
@@ -385,15 +385,15 @@ namespace GameShipsAndBoats.Game.Core
             catch (Exception ex)
             {
                 Console.Clear();
-                ConsolePrinter.PrintLine(GameElements.GetTitle());
-                ConsolePrinter.PrintLine(GameElements.GetLineSolid());
+                ConsolePrinter.PrintLine(GameElements.Title);
+                ConsolePrinter.PrintLine(GameElements.LineSolid);
                 Thread.Sleep(1000);
                 ConsolePrinter.PrintLine(ex.Message);
             }
             finally
             {
                 Thread.Sleep(3000);
-                ConsolePrinter.PrintLine(GameElements.GetPressKeyMessage());
+                ConsolePrinter.PrintLine(GameElements.PressAnyKey);
                 Console.ReadKey();
                 Console.Clear();
             }
@@ -404,8 +404,8 @@ namespace GameShipsAndBoats.Game.Core
             while (true)
             {
                 Console.Clear();
-                ConsolePrinter.PrintLine(GameElements.GetTitle());
-                ConsolePrinter.PrintLine(GameElements.GetLineSolid());
+                ConsolePrinter.PrintLine(GameElements.Title);
+                ConsolePrinter.PrintLine(GameElements.LineSolid);
                 ConsolePrinter.PrintLine("  Do you want to see what the");
                 ConsolePrinter.Print("  Opponent sees (Y/N): ");
 
@@ -418,15 +418,38 @@ namespace GameShipsAndBoats.Game.Core
                     case ConsoleKey.Enter:
                         return false;
                     default:
-                        ConsolePrinter.PrintLine(GameElements.GetInvalidMessage(), ConsoleColor.Red);
+                        ConsolePrinter.PrintLine(GameElements.ErrorMessages.InvalidInput, ConsoleColor.Red);
                         break;
                 }
             }
         }
 
+        private static string[] GetStatistics()
+        {
+            int gamesWon = 0;
+            int gamesLost = 0;
+
+            var connection = new SqlConnection("Server=localhost;Database=ShipsAndBoatsGame;Integrated Security=True;");
+
+            connection.Open();
+
+            using (connection)
+            {
+                var commandGetWonResult = new SqlCommand("SELECT Won FROM Statisticsss WHERE ID=1", connection);
+                var resultWon = commandGetWonResult.ExecuteScalar();
+                gamesWon = (int)resultWon;
+
+                var commandGetLostResult = new SqlCommand("SELECT Lost FROM Statisticsss WHERE ID=1", connection);
+                var resultLost = commandGetLostResult.ExecuteScalar();
+                gamesLost = (int)resultLost;
+            }
+
+            return new string[] { gamesWon.ToString("D4"), gamesLost.ToString("D4") };
+        }
+
         private static void UpdateDatabaseStatistics(bool isWinner)
         {
-            var connection = new SqlConnection("Server=PT\\SQLEXPRESS;Database=ShipsAndBoatsGame;Integrated Security=True;");
+            var connection = new SqlConnection("Server=localhost;Database=ShipsAndBoatsGame;Integrated Security=True;");
 
             connection.Open();
             using (connection)
@@ -452,15 +475,11 @@ namespace GameShipsAndBoats.Game.Core
             }
         }
 
-        private static void PrintGameplayUI(
-            IPlayer player,
-            IPlayer opponent,
-            int stage,
-            bool isOpponentViewEnabled = false)
+        private static void PrintGameplayUI(IPlayer player, IPlayer opponent, int stage, bool isOpponentViewEnabled = false)
         {
             Console.Clear();
-            ConsolePrinter.PrintLine(GameElements.GetTitle());
-            ConsolePrinter.PrintLine(GameElements.GetLineSolid());
+            ConsolePrinter.PrintLine(GameElements.Title);
+            ConsolePrinter.PrintLine(GameElements.LineSolid);
             ConsolePrinter.PrintLine($"   Opponent:");
             ConsolePrinter.PrintLine(player.EnemyBattlefield.ToString());
             ConsolePrinter.PrintLine($"   You:");
@@ -472,10 +491,10 @@ namespace GameShipsAndBoats.Game.Core
                 ConsolePrinter.PrintLine(opponent.EnemyBattlefield.ToString());
             }
 
-            ConsolePrinter.PrintLine(GameElements.GetLegend());
-            ConsolePrinter.PrintLine(GameElements.GetLineSolid());
-            ConsolePrinter.PrintLine(GameElements.GetCredits());
-            ConsolePrinter.PrintLine($"\n Stage {stage}");
+            ConsolePrinter.PrintLine(GameElements.Legend);
+            ConsolePrinter.PrintLine(GameElements.LineSolid);
+            ConsolePrinter.PrintLine(GameElements.Credits);
+            ConsolePrinter.PrintLine($"\r\n Stage {stage}");
         }
     }
 }
