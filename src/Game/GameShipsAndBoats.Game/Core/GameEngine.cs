@@ -28,7 +28,7 @@ namespace GameShipsAndBoats.Game.Core
                     case ConsoleKey.S:
                         return "STATISTICS";
                     default:
-                        ConsolePrinter.PrintLine(GameElements.GetInvalidMessage());
+                        ConsolePrinter.PrintLine(GameElements.GetInvalidMessage(), ConsoleColor.Red);
                         break;
                 }
             }
@@ -408,9 +408,11 @@ namespace GameShipsAndBoats.Game.Core
                     case ConsoleKey.Y:
                         return true;
                     case ConsoleKey.N:
+                    case ConsoleKey.Spacebar:
+                    case ConsoleKey.Enter:
                         return false;
                     default:
-                        ConsolePrinter.PrintLine(GameElements.GetInvalidMessage());
+                        ConsolePrinter.PrintLine(GameElements.GetInvalidMessage(), ConsoleColor.Red);
                         break;
                 }
             }
