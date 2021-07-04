@@ -327,7 +327,7 @@ namespace GameShipsAndBoats.Game.Core
                         ConsolePrinter.Print($" Attack (i.e. A0/a0): ");
                         string command = Console.ReadLine();
 
-                        if (Regex.IsMatch(command, @"[A-Ja-j]{1}[0-9]{1}"))
+                        if (Regex.IsMatch(command, @"^[A-Ja-j]{1}[0-9]{1}\b"))
                         {
                             char colChar = command[0];
                             char rowChar = command[1];
