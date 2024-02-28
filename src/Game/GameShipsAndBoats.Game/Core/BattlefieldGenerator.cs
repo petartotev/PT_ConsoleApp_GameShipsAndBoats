@@ -21,7 +21,7 @@ namespace GameShipsAndBoats.Game.Core
 
             Random rndm = new Random();
 
-            //LOOP THROUGH PLACING THE 10 VESSELS (1 TANKER => 2 SUBMARINES => 3 CARRIERS => 4 BOATS)
+            // LOOP THROUGH PLACING THE 10 VESSELS (1 TANKER => 2 SUBMARINES => 3 CARRIERS => 4 BOATS)
             for (int vesselCount = 1; vesselCount <= 10; vesselCount++)
             {
                 // GET THE TYPE OF VESSEL BASED ON VESSEL COUNT
@@ -194,7 +194,7 @@ namespace GameShipsAndBoats.Game.Core
         {
             int vesselLength = BattlefieldElements.GetVesselLength(vessel);
 
-            //HORIZONTAL ORIENTATION
+            // HORIZONTAL ORIENTATION
             if (orientation == 0)
             {
                 // LEFT HALF GOING RIGHT
@@ -335,7 +335,7 @@ namespace GameShipsAndBoats.Game.Core
         {
             int vesselLength = BattlefieldElements.GetVesselLength(vessel);
 
-            //HORIZONTAL ORIENTATION
+            // HORIZONTAL ORIENTATION
             if (orientation == 0)
             {
                 // LEFT HALF GOING RIGHT
@@ -427,7 +427,7 @@ namespace GameShipsAndBoats.Game.Core
             {
                 for (int c = col - 1; c <= col + 1; c++)
                 {
-                    if ((r >= 0 && r <= 9 && c >= 0 && c <= 9))
+                    if (r >= 0 && r <= 9 && c >= 0 && c <= 9)
                     {
                         field[r, c] = BattlefieldElements.slotOccuppied;
                     }
